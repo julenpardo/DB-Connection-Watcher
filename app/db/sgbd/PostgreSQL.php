@@ -65,8 +65,11 @@ class PostgreSQL implements DBInterface
             . "WHERE datname = '$this->database' "
             . 'GROUP BY activity.datid';
 
-        $this->connectionNumberStatement = pg_prepare($this->connection, self::CONNECTION_NUMBER_STATEMENT,
-            $connectionNumberSql);
+        $this->connectionNumberStatement = pg_prepare(
+            $this->connection,
+            self::CONNECTION_NUMBER_STATEMENT,
+            $connectionNumberSql
+        );
     }
 
     /**
