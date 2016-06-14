@@ -13,15 +13,17 @@ class PostgreSQLTest extends PHPUnit_Framework_TestCase
         $username = 'postgres';
         $password = 'postgres';
         $host = 'localhost';
-        $port = 5432;
+        $port = 5433;
 
         $postgresql = new PostgreSQL($database, $username, $password, $host, $port);
 
         try {
             $postgresql->connect();
         } catch (Exception $exception) {
-            $this->fails("No exception should be thrown.");
+            $this->fail("No exception should be thrown.");
         }
+
+        $postgresql->disconnect();
     }
 
     /**
@@ -33,10 +35,36 @@ class PostgreSQLTest extends PHPUnit_Framework_TestCase
         $username = 'postgres';
         $password = 'postgres';
         $host = 'localhost';
-        $port = 5432;
+        $port = 5433;
 
         $postgresql = new PostgreSQL($database, $username, $password, $host, $port);
         $postgresql->connect();
     }
 
+    public function testDisconnect()
+    {
+        $database = 'postgres';
+        $username = 'postgres';
+        $password = 'postgres';
+        $host = 'localhost';
+        $port = 5433;
+
+        $postgresql = new PostgreSQL($database, $username, $password, $host, $port);
+
+        try {
+            $postgresql->connect();
+            $postgresql->disconnect();
+        } catch (Exception $exception) {
+            $this->fail("No exception should be thrown.");
+        }
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testDisconnectException()
+    {
+        $postgresql = new PostgreSQL(null, null, null);
+        $postgresql->disconnect();
+    }
 }

@@ -61,7 +61,7 @@
         <exec command="./postgres -D ${postgresql.data.dir} &gt; /dev/null 2&gt;&amp;1 &amp;" dir="${postgresql.install.dir}/bin" returnProperty="postgresql.pid" outputProperty="postgresql_init.postgres.output"/>
         <echo msg="${postgresql_init.postgres.output}"/>
 
-        <copy todir="${postgresql.data.dir}">
+        <copy todir="${postgresql.data.dir}" overwrite="true">
             <fileset dir="${postgresql.config.dir}"/>
         </copy>
 
