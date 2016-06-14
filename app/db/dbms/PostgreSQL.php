@@ -1,6 +1,6 @@
 <?php
 
-namespace DBConnectionWatcher\SGBD;
+namespace DBConnectionWatcher\DBMS;
 
 use DBConnectionWatcher\DBInterface;
 
