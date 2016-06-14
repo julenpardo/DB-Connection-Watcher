@@ -28,8 +28,8 @@
     </target>
 
     <target name="postgresql_cleanup">
-        <delete>
-            <fileset dir="${postgresql.data.dir}" casesensitive="false"/>
+        <delete includeemptydirs="true">
+            <fileset dir="${postgresql.data.dir}" includes="**/*" casesensitive="false"/>
         </delete>
     </target>
 
