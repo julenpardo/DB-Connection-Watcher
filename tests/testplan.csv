@@ -1,9 +1,9 @@
 #;Class;Method;Values;Comments;Technique;Tested?;Result;Notes;Author;Date
 1;db/dbms/PostgreSQL;connect();-;"- Test that the connection to a database is successfully made.
-- Test that an exception is thrown if an error occurs.";Equivalence/Exception;No;;;;
-2;db/dbms/PostgreSQL;createConnectionNumberStatement();-;Test that the prepared statement for the connection number query is successfully made.;;No;;;;
+- Test that an exception is thrown if an error occurs.";Equivalence/Exception;Yes;Pass;;Julen Pardo;14/06/2016
+2;db/dbms/PostgreSQL;createConnectionNumberStatement();-;Test that the prepared statement for the connection number query is successfully made.;;Yes;Pass;;Julen Pardo;14/06/2016
 3;db/dbms/PostgreSQL;disconnect();-;"- Test that the connection to a database is successfully closed.
-- Test that an exception is thrown if an error occurs.";Equivalence/Exception;No;;;;
+- Test that an exception is thrown if an error occurs.";Equivalence/Exception;Yes;Pass;;Julen Pardo;14/06/2016
 4;db/dbms/PostgreSQL;queryConnectionNumber();-;Test that the query returns the correct number of connections to a database.;Equivalence/Boundary;No;;;;
 ;;;;;;;;;;
 ;;;;;;;;;;
