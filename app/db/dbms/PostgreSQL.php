@@ -1,8 +1,8 @@
 <?php
 
-namespace DBConnectionWatcher\DBMS;
+namespace DBConnectionWatcher\DB\DBMS;
 
-use DBConnectionWatcher\DBInterface;
+use DBConnectionWatcher\DB\DBInterface;
 
 class PostgreSQL implements DBInterface
 {

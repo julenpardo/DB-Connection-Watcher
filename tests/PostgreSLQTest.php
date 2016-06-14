@@ -1,24 +1,42 @@
 <?php
 
-require_once('app/db/dbms/PostgreSQL.php');
+require_once(dirname(__FILE__) . '/../app/db/DBInterface.php');
+require_once(dirname(__FILE__) . '/../app/db/dbms/PostgreSQL.php');
 
-use DBConnectionWatcher\DBMS\PostgreSQL;
+use DBConnectionWatcher\DB\DBMS\PostgreSQL;
 
 class PostgreSQLTest extends PHPUnit_Framework_TestCase
 {
+    public function testConnect()
+    {
+        $database = 'postgres';
+        $username = 'postgres';
+        $password = 'postgres';
+        $host = 'localhost';
+        $port = 5432;
+
+        $postgresql = new PostgreSQL($database, $username, $password, $host, $port);
+
+        try {
+            $postgresql->connect();
+        } catch (Exception $exception) {
+            $this->fails("No exception should be thrown.");
+        }
+    }
+
+    /**
+     * @expectedException Exception
+     */
     public function testConnectException()
     {
         $database = 'non_existing_database';
-        $username = 'username';
-        $password = 'password';
+        $username = 'postgres';
+        $password = 'postgres';
         $host = 'localhost';
-        $port = 5433;
+        $port = 5432;
 
-        try {
-            new PostgreSQL($database, $username, $password, $host, $port);
-        } catch (Exception $exception) {
-            $this->fail("No exception should be thrown.");
-        }
+        $postgresql = new PostgreSQL($database, $username, $password, $host, $port);
+        $postgresql->connect();
     }
 
 }
