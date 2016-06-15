@@ -104,4 +104,30 @@ class PostgreSQLTest extends PHPUnit_Framework_TestCase
             pg_close($connection);
         }
     }
+
+    public function testQueryConnectionNumberZero()
+    {
+        $database = 'postgres';
+        $username = 'postgres';
+        $password = 'postgres';
+        $host = 'localhost';
+        $port = 5433;
+
+        $postgresql = new PostgreSQL($database, $username, $password, $host, $port);
+        $postgresql->connect();
+
+        $expectedConnections = 0;
+        $actualConnections = $postgresql->queryConnectionNumber();
+
+        $this->assertEquals($expectedConnections, $actualConnections);
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testQueryConnectionNumberException()
+    {
+        $postgresql = new PostgreSQL(null, null, null);
+        $postgresql->queryConnectionNumber();
+    }
 }

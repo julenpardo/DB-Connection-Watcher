@@ -76,18 +76,24 @@ class PostgreSQL implements DBInterface
      * is configured for a threshold of 1 connection (which would be weird), the tool would always return 1 if its
      * connection is not subtracted (which would be even more weird, since the database is not having a real usage).
      *
+     * @throws \Exception
      * @return The number of connections.
      */
     public function queryConnectionNumber()
     {
         $connectionNumberSql = 'SELECT COUNT(activity.datid) '
             . 'FROM pg_stat_activity activity '
-            . "WHERE datname = '$this->database' "
+            . "WHERE datname = $1 "
             . 'GROUP BY activity.datid';
 
-        pg_prepare($this->connection, self::CONNECTION_NUMBER_STATEMENT, $connectionNumberSql);
+        $prepared = pg_prepare($this->connection, self::CONNECTION_NUMBER_STATEMENT, $connectionNumberSql);
 
-        $queryResult = pg_execute($this->connection, self::CONNECTION_NUMBER_STATEMENT, []);
+        if (!$prepared) {
+            throw new \Exception('An error occurred when creating the prepared statement for the query: '
+                . pg_last_error($this->connection));
+        }
+
+        $queryResult = pg_execute($this->connection, self::CONNECTION_NUMBER_STATEMENT, array($this->database));
         $row = pg_fetch_row($queryResult);
 
         if (!$row) {
