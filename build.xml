@@ -5,6 +5,7 @@
     <property name="sourcecode.dir" value="${workspace.dir}/${phing.project.name}"/>
 
     <property name="postgresql.version" value=""/>
+    <property name="postgresql.port" value=""/>
     <property name="postgresql.url" value="https://github.com/postgres/postgres"/>
     <property name="postgresql.config.dir" value="${env.JENKINS_HOME}/postgres-config"/>
     <property name="postgresql.git" value="${workspace.dir}/postgresql.git"/>
@@ -58,16 +59,17 @@
         <exec command="./initdb --pgdata=${postgresql.data.dir}" dir="${postgresql.install.dir}/bin" outputProperty="postgresql_init.initdb.output"/>
         <echo msg="${postgresql_init.initdb.output}"/>
 
-        <exec command="./postgres -D ${postgresql.data.dir} &gt; /dev/null 2&gt;&amp;1 &amp;" dir="${postgresql.install.dir}/bin" returnProperty="postgresql.pid" outputProperty="postgresql_init.postgres.output"/>
-        <echo msg="${postgresql_init.postgres.output}"/>
-
         <copy todir="${postgresql.data.dir}" overwrite="true">
             <fileset dir="${postgresql.config.dir}"/>
         </copy>
+        <echo file="${postgresql.data.dir}/postgresql.conf" append="true" msg="port = ${postgresql.port}"/>
 
-        <exec command="sleep 5" description="Incredibly dirty workaround to 'wait' until the database system is set up."/>
+        <exec command="./postgres -D ${postgresql.data.dir} &gt; /dev/null 2&gt;&amp;1 &amp;" dir="${postgresql.install.dir}/bin" returnProperty="postgresql.pid" outputProperty="postgresql_init.postgres.output"/>
+        <echo msg="${postgresql_init.postgres.output}"/>
 
-        <exec command="./createuser -s postgres" dir="${postgresql.install.dir}/bin"/>
+        <exec command="sleep 10" description="Incredibly dirty workaround to 'wait' until the database system is set up."/>
+
+        <exec command="./createuser -p ${postgresql.port} -s postgres" dir="${postgresql.install.dir}/bin"/>
     </target>
 
     <target name="phpunit" depends="postgresql_init">
