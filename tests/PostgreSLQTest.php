@@ -83,8 +83,15 @@ class PostgreSQLTest extends PHPUnit_Framework_TestCase
 
         $connections = [];
 
+        // The connection must be created with PGSQL_CONNECTION_FORCE_NEW flag because, according to the
+        // documentation, "if a second call is made to pg_pconnect() with the same connection_string as
+        // an existing connection, the existing connection will be returned unless you pass
+        // PGSQL_CONNECT_FORCE_NEW as connect_type."
         for ($index = 0; $index < $expectedConnections; $index++) {
-            $connection = pg_connect("host=$host port=$port dbname=$database user=$username password=$password");
+            $connection = pg_connect(
+                "host=$host port=$port dbname=$database user=$username password=$password",
+                PGSQL_CONNECT_FORCE_NEW
+            );
 
             array_push($connections, $connection);
         }
