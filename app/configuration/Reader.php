@@ -50,7 +50,12 @@ class Reader
      *    parser returns every value as string).
      *
      * @param array $configuration The configuration array parsed with parse_ini_file.
-     * @throws \Exception If the file has not the correct format.
+     * @throws InvalidConfigurationFormatException If the .ini file has an incorrect format.
+     * @throws InvalidConfigurationPropertyException If the .ini file has a property that is not considered.
+     * @throws InvalidConfigurationValueException If a property has an incorrect value.
+     * @throws InvalidConfigurationValueTypeException If a property has a value of incorrect format.
+     * @throws MissingOrExtraConfigurationsException If the .ini file has not the number of expected properties.
+     * @throws \Exception If the .ini file has not the correct format.
      */
     private static function checkConfiguration($configuration)
     {
@@ -59,18 +64,17 @@ class Reader
         }
 
         foreach ($configuration as $section => $data) {
-            $invalidFileFormat = !is_array($data);
+            $invalidConfigurationFormat = !is_array($data);
 
-            if ($invalidFileFormat) {
-                throw new \Exception('The file has an invalid format (may you forgot to put a [section]?).');
+            if ($invalidConfigurationFormat) {
+                throw new InvalidConfigurationFormatException();
             }
 
             $keys = array_keys($data);
-
             $missingConfig = count($keys) !== count(self::$fieldsAndTypes);
 
             if ($missingConfig) {
-                throw new \Exception("Missing (or extra) configuration(s) in '$section' section.");
+                throw new MissingOrExtraConfigurationsException($section);
             }
 
             foreach ($data as $key => $value) {
@@ -78,11 +82,11 @@ class Reader
                 $invalidConfig = !in_array($key, $fieldNames);
 
                 if ($invalidConfig) {
-                    throw new \Exception("Invalid '$key' configuration in $section' section.");
+                    throw new InvalidConfigurationPropertyException($key, $section);
                 }
 
                 if ($value === '') {
-                    throw new \Exception("The '$key' configuration is empty.");
+                    throw new InvalidConfigurationValueException($key);
                 }
 
                 $expectedType = self::$fieldsAndTypes[$key];
@@ -91,8 +95,7 @@ class Reader
                     $invalidNumber = !is_numeric($value);
 
                     if ($invalidNumber) {
-                        throw new \Exception("Invalid type of '$key' configuration: expecting $expectedType type and "
-                            . "got '$value' value, in section '$section'.");
+                        throw new InvalidConfigurationValueTypeException($key, $expectedType, $value, $section);
                     }
                 }
             }
