@@ -27,7 +27,7 @@
 
     <testsuites>
         <testsuite name="db_connection_watcher_testsuite">
-            <directory suffix="_test.php">tests</directory>
+            <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
 

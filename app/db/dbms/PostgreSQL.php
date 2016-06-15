@@ -1,15 +1,14 @@
 <?php
 
-namespace DBConnectionWatcher\SGBD;
+namespace DBConnectionWatcher\DB\DBMS;
 
-use DBConnectionWatcher\DBInterface;
+use DBConnectionWatcher\DB\DBInterface;
 
 class PostgreSQL implements DBInterface
 {
     const CONNECTION_NUMBER_STATEMENT = 'connection_number';
 
     private $connection;
-    private $connectionNumberStatement;
     private $database;
     private $username;
     private $password;
@@ -37,7 +36,7 @@ class PostgreSQL implements DBInterface
     /**
      * Creates the connection to the database.
      *
-     * @throws \Exception If an error occurs when connecting to database.
+     * @throws \Exception If an error occurs when connecting to database, or creating the prepared statement.
      */
     public function connect()
     {
@@ -50,26 +49,6 @@ class PostgreSQL implements DBInterface
             throw new \Exception('An error occurred when trying to connect to PostgreSQL database: '
                 . pg_last_error($this->connection));
         }
-
-        $this->createConnectionNumberStatement();
-    }
-
-    /**
-     * Creates the prepared statement for the connection number. Using a prepared statement is more optimal that
-     * executing 'non-prepared' queries.
-     */
-    protected function createConnectionNumberStatement()
-    {
-        $connectionNumberSql = 'SELECT COUNT(activity.datid) '
-            . 'FROM pg_stat_activity activity '
-            . "WHERE datname = '$this->database' "
-            . 'GROUP BY activity.datid';
-
-        $this->connectionNumberStatement = pg_prepare(
-            $this->connection,
-            self::CONNECTION_NUMBER_STATEMENT,
-            $connectionNumberSql
-        );
     }
 
     /**
@@ -90,16 +69,38 @@ class PostgreSQL implements DBInterface
     /**
      * Queries the number of current connections to the database for which the connection has been established.
      * If the fetched row is false, means that the query has returned no row, so, that means that the database has not
-     * any connection.
+     * any connection. Which is certainly impossible since this tool is connected to the database to make the query.
      *
+     * As the connection query will also count the connection made by this tool to make that query, and that this
+     * connection can be considered as "residual", it is subtracted from the connection count. For example, if the tool
+     * is configured for a threshold of 1 connection (which would be weird), the tool would always return 1 if its
+     * connection is not subtracted (which would be even more weird, since the database is not having a real usage).
+     *
+     * @throws \Exception
      * @return The number of connections.
      */
     public function queryConnectionNumber()
     {
-        $queryResult = pg_execute($this->connection, self::CONNECTION_NUMBER_STATEMENT, []);
+        $connectionNumberSql = 'SELECT COUNT(activity.datid) '
+            . 'FROM pg_stat_activity activity '
+            . "WHERE datname = $1 "
+            . 'GROUP BY activity.datid';
+
+        $prepared = pg_prepare($this->connection, self::CONNECTION_NUMBER_STATEMENT, $connectionNumberSql);
+
+        if (!$prepared) {
+            throw new \Exception('An error occurred when creating the prepared statement for the query: '
+                . pg_last_error($this->connection));
+        }
+
+        $queryResult = pg_execute($this->connection, self::CONNECTION_NUMBER_STATEMENT, array($this->database));
         $row = pg_fetch_row($queryResult);
 
-        $connectionNumber = (!$row) ? 0 : $row[0];
+        if (!$row) {
+            $connectionNumber = 0;
+        } else {
+            $connectionNumber = $row[0] - 1;
+        }
 
         return $connectionNumber;
     }

@@ -5,7 +5,9 @@
     <property name="sourcecode.dir" value="${workspace.dir}/${phing.project.name}"/>
 
     <property name="postgresql.version" value=""/>
+    <property name="postgresql.port" value=""/>
     <property name="postgresql.url" value="https://github.com/postgres/postgres"/>
+    <property name="postgresql.config.dir" value="${env.JENKINS_HOME}/postgres-config"/>
     <property name="postgresql.git" value="${workspace.dir}/postgresql.git"/>
     <property name="postgresql.install.dir" value="${workspace.dir}/postgresql_version/${postgresql.version}"/>
     <property name="postgresql.data.dir" value="${postgresql.install.dir}/data"/>
@@ -15,7 +17,7 @@
     <property name="testsuite.name" value="db_connection_watcher_testsuite"/>
 
     <property name="phpcs.standard" value="PSR2"/>
-    <property name="phpcs.ignore" value="*.xml,*.md,.idea/*,*.gitignore,.git/*"/>
+    <property name="phpcs.ignore" value="*.xml,*.md,.idea/*,*.gitignore,.git/*,tests/*"/>
 
     <property name="success.code" value="0"/>
 
@@ -24,6 +26,12 @@
         <echo msg="On branch ${git.branch}."/>
         <exec command="git log --pretty=format:'%h' -n 1" outputProperty="git.hash"/>
         <echo msg="Building commit ${git.hash}."/>
+    </target>
+
+    <target name="postgresql_cleanup">
+        <delete includeemptydirs="true">
+            <fileset dir="${postgresql.data.dir}" includes="**/*" casesensitive="false"/>
+        </delete>
     </target>
 
     <target name="postgresql_pull">
@@ -38,25 +46,34 @@
         <exec command="git checkout --force ${postgresql.version}" dir="${postgresql.git}" outputProperty="postgresql_install.checkout.output"/>
         <echo msg="${postgresql_install.checkout.output}"/>
 
-        <exec command="configure ${postgresql.configure.args}" dir="${postgresql.git}"/>
+        <exec command="./configure ${postgresql.configure.args}" dir="${postgresql.git}"/>
 
-        <exec command="make" dir="${postgresql.git}"/>
+        <exec command="./make" dir="${postgresql.git}"/>
 
-        <exec command="make install" dir="${postgresql.git}"/>
+        <exec command="./make install" dir="${postgresql.git}"/>
     </target>
 
     <target name="postgresql_init" depends="postgresql_install">
-        <exec command="initdb --pgdata=${postgresql.data.dir}" dir="${postgresql.install.dir}/bin"/>
-        <exec command="postgres -D ${postgresql.data.dir} &gt; /dev/null 2&gt;&amp;1 &amp;" dir="${postgresql.install.dir}/bin" returnProperty="postgresql.pid"/>
-    </target>
+        <phingcall target="postgresql_cleanup"/>
 
-    <target name="postgresql_stop">
-        <exec command="killp ${postgresql.pid}"/>
+        <exec command="./initdb --pgdata=${postgresql.data.dir}" dir="${postgresql.install.dir}/bin" outputProperty="postgresql_init.initdb.output"/>
+        <echo msg="${postgresql_init.initdb.output}"/>
+
+        <copy todir="${postgresql.data.dir}" overwrite="true">
+            <fileset dir="${postgresql.config.dir}"/>
+        </copy>
+        <echo file="${postgresql.data.dir}/postgresql.conf" append="true" msg="port = ${postgresql.port}"/>
+
+        <exec command="./postgres -D ${postgresql.data.dir} &gt; /dev/null 2&gt;&amp;1 &amp;" dir="${postgresql.install.dir}/bin" returnProperty="postgresql.pid" outputProperty="postgresql_init.postgres.output"/>
+        <echo msg="${postgresql_init.postgres.output}"/>
+
+        <exec command="sleep 10" description="Incredibly dirty workaround to 'wait' until the database system is set up."/>
+
+        <exec command="./createuser -p ${postgresql.port} -s postgres" dir="${postgresql.install.dir}/bin"/>
     </target>
 
     <target name="phpunit" depends="postgresql_init">
         <exec command="phpunit --testsuite ${testsuite.name}" dir="${sourcecode.dir}" returnProperty="phpunit.status" outputProperty="phpunit.output"/>
-        <phingcall target="postgresql_stop"/>
         <if>
             <not>
                 <equals arg1="${phpunit.status}" arg2="${success.code}"/>
@@ -66,6 +83,10 @@
             </then>
         </if>
         <echo msg="${phpunit.output}"/>
+    </target>
+
+    <target name="postgresql_stop" depends="phpunit">
+        <exec command="killp ${postgresql.pid}"/>
     </target>
 
     <target name="phpcs">
@@ -80,5 +101,7 @@
         </if>
         <echo msg="${phpcs.output}"/>
     </target>
+
+    <target name="all" depends="postgresql_stop,phpcs"/>
 
 </project>
