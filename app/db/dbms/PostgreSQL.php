@@ -9,7 +9,6 @@ class PostgreSQL implements DBInterface
     const CONNECTION_NUMBER_STATEMENT = 'connection_number';
 
     private $connection;
-    private $connectionNumberStatement;
     private $database;
     private $username;
     private $password;
@@ -37,7 +36,7 @@ class PostgreSQL implements DBInterface
     /**
      * Creates the connection to the database.
      *
-     * @throws \Exception If an error occurs when connecting to database.
+     * @throws \Exception If an error occurs when connecting to database, or creating the prepared statement.
      */
     public function connect()
     {
@@ -50,26 +49,6 @@ class PostgreSQL implements DBInterface
             throw new \Exception('An error occurred when trying to connect to PostgreSQL database: '
                 . pg_last_error($this->connection));
         }
-
-        $this->createConnectionNumberStatement();
-    }
-
-    /**
-     * Creates the prepared statement for the connection number. Using a prepared statement is more optimal that
-     * executing 'non-prepared' queries.
-     */
-    protected function createConnectionNumberStatement()
-    {
-        $connectionNumberSql = 'SELECT COUNT(activity.datid) '
-            . 'FROM pg_stat_activity activity '
-            . "WHERE datname = '$this->database' "
-            . 'GROUP BY activity.datid';
-
-        $this->connectionNumberStatement = pg_prepare(
-            $this->connection,
-            self::CONNECTION_NUMBER_STATEMENT,
-            $connectionNumberSql
-        );
     }
 
     /**
@@ -101,6 +80,13 @@ class PostgreSQL implements DBInterface
      */
     public function queryConnectionNumber()
     {
+        $connectionNumberSql = 'SELECT COUNT(activity.datid) '
+            . 'FROM pg_stat_activity activity '
+            . "WHERE datname = '$this->database' "
+            . 'GROUP BY activity.datid';
+
+        pg_prepare($this->connection, self::CONNECTION_NUMBER_STATEMENT, $connectionNumberSql);
+
         $queryResult = pg_execute($this->connection, self::CONNECTION_NUMBER_STATEMENT, []);
         $row = pg_fetch_row($queryResult);
 
