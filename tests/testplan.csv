@@ -80,3 +80,22 @@ $configuration = array('section1', array(
  - One that passes an array with the incorrect format for an integer.
  - One that passes a non admitted value for 'dbms' option.
  - One that passes a correct configuration array.";Equivalence/Exception;Yes;Pass;;Julen Pardo;16/06/2016
+6;db/DBFactory;getInstance;"$configuration = array(
+    'database', 'testdb',
+    'username', 'postgres',
+    'password', 'postgres',
+    'host', 'localhost',
+    'port', '5433',
+    'dbsm', 'non existing dbms'
+)
+------------------------------------------------------------------------
+$configuration = array(
+    'database', 'testdb',
+    'username', 'postgres',
+    'password', 'postgres',
+    'host', 'localhost',
+    'port', '5433',
+    'dbsm', 'postgresql'
+)";"The are two different tests:
+ - One that passes an non existing dbms.
+ - One that passes a correct configuration an returns the instance correctly.";Equivalence/Exception;Yes;Pass;;Julen Pardo;16/06/2016
