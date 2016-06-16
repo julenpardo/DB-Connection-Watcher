@@ -98,4 +98,4 @@ $configuration = array(
     'dbsm', 'postgresql'
 )";"The are two different tests:
  - One that passes an non existing dbms.
- - One that passes a correct configuration an returns the instance correctly.";Equivalence/Exception;No;;;;
+ - One that passes a correct configuration an returns the instance correctly.";Equivalence/Exception;Yes;Pass;;Julen Pardo;16/06/2016
