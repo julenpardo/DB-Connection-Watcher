@@ -1,13 +1,13 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../app/configuration/ConfigurationException.php');
-require_once(dirname(__FILE__) . '/../app/configuration/Reader.php');
-require_once(dirname(__FILE__) . '/../app/configuration/FileNotFoundException.php');
-require_once(dirname(__FILE__) . '/../app/configuration/InvalidConfigurationFormatException.php');
-require_once(dirname(__FILE__) . '/../app/configuration/InvalidConfigurationPropertyException.php');
-require_once(dirname(__FILE__) . '/../app/configuration/InvalidConfigurationValueException.php');
-require_once(dirname(__FILE__) . '/../app/configuration/InvalidConfigurationValueTypeException.php');
-require_once(dirname(__FILE__) . '/../app/configuration/MissingOrExtraConfigurationsException.php');
+require_once(dirname(__FILE__) . '/../src/configuration/ConfigurationException.php');
+require_once(dirname(__FILE__) . '/../src/configuration/Reader.php');
+require_once(dirname(__FILE__) . '/../src/configuration/FileNotFoundException.php');
+require_once(dirname(__FILE__) . '/../src/configuration/InvalidConfigurationFormatException.php');
+require_once(dirname(__FILE__) . '/../src/configuration/InvalidConfigurationPropertyException.php');
+require_once(dirname(__FILE__) . '/../src/configuration/InvalidConfigurationValueException.php');
+require_once(dirname(__FILE__) . '/../src/configuration/InvalidConfigurationValueTypeException.php');
+require_once(dirname(__FILE__) . '/../src/configuration/MissingOrExtraConfigurationsException.php');
 
 use DBConnectionWatcher\Configuration\Reader;
 

@@ -1,9 +1,9 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../app/db/ConnectionException.php');
-require_once(dirname(__FILE__) . '/../app/db/PreparedStatementCreationException.php');
-require_once(dirname(__FILE__) . '/../app/db/DBInterface.php');
-require_once(dirname(__FILE__) . '/../app/db/dbms/PostgreSQL.php');
+require_once(dirname(__FILE__) . '/../src/db/ConnectionException.php');
+require_once(dirname(__FILE__) . '/../src/db/PreparedStatementCreationException.php');
+require_once(dirname(__FILE__) . '/../src/db/DBInterface.php');
+require_once(dirname(__FILE__) . '/../src/db/dbms/PostgreSQL.php');
 
 use DBConnectionWatcher\DB\DBMS\PostgreSQL;
 
