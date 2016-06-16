@@ -45,10 +45,10 @@ class PostgreSQL implements DBInterface
         $connectionString = "host=$this->host port=$this->port dbname=$this->database "
             . "user=$this->username password=$this->password";
 
-        $this->connection = pg_connect($connectionString);
+        $this->connection = @pg_connect($connectionString);
 
         if (!$this->connection) {
-            throw new ConnectionException('connect', pg_last_error($this->connection));
+            throw new ConnectionException('connect');
         }
     }
 
@@ -59,10 +59,10 @@ class PostgreSQL implements DBInterface
      */
     public function disconnect()
     {
-        $connectionClosed = pg_close($this->connection);
+        $connectionClosed = @pg_close($this->connection);
 
         if (!$connectionClosed) {
-            throw new ConnectionException('close', pg_last_error($this->connection));
+            throw new ConnectionException('close');
         }
     }
 
@@ -86,10 +86,10 @@ class PostgreSQL implements DBInterface
             . "WHERE datname = $1 "
             . 'GROUP BY activity.datid';
 
-        $prepared = pg_prepare($this->connection, self::CONNECTION_NUMBER_STATEMENT, $connectionNumberSql);
+        $prepared = @pg_prepare($this->connection, self::CONNECTION_NUMBER_STATEMENT, $connectionNumberSql);
 
         if (!$prepared) {
-            throw new PreparedStatementCreationException(pg_last_error($this->connection));
+            throw new PreparedStatementCreationException();
         }
 
         $queryResult = pg_execute($this->connection, self::CONNECTION_NUMBER_STATEMENT, array($this->database));

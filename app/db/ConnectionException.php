@@ -10,12 +10,11 @@ class ConnectionException extends \Exception
      * ConnectionException constructor.
      *
      * @param string $action If opening or closing.
-     * @param string $errorMessage DBMS error message.
      */
-    public function __construct($action, $errorMessage = '')
+    public function __construct($action)
     {
         $message = str_replace('%1', $action, self::MESSAGE);
 
-        parent::__construct($message . $errorMessage);
+        parent::__construct($message . error_get_last()['message']);
     }
 }

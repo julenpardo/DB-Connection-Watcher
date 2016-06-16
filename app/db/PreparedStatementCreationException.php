@@ -8,11 +8,9 @@ class PreparedStatementCreationException extends \Exception
 
     /**
      * PreparedStatementCreationException constructor.
-     *
-     * @param string $errorMessage DBMS error message.
      */
-    public function __construct($errorMessage = '')
+    public function __construct()
     {
-        parent::__construct(self::MESSAGE . $errorMessage);
+        parent::__construct(self::MESSAGE . error_get_last()['message']);
     }
 }
