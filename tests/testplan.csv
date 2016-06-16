@@ -4,3 +4,59 @@
 2;db/dbms/PostgreSQL;disconnect();-;" Test that the connection to a database is successfully closed.
 - Test that an exception is thrown if an error occurs.";Equivalence/Exception;Yes;Pass;;Julen Pardo;14/06/2016
 3;db/dbms/PostgreSQL;queryConnectionNumber();-;Test that the query returns the correct number of connections to a database.;Equivalence/Exception;Yes;Pass;;Julen Pardo;15/06/2016
+4;configuration/Reader;readConfiguration;"$configFilePath = '/non/existing/file.ini'
+----------------------------------------------------------------------
+$configFilePath = 'dbconnectionwatcher.ini' (existing)
+----------------------------------------------------------------------
+$configFilePath = 'dbconnectionwatcher.ini' (existing)";"There are three different tests for this method:
+ - One that passes a non-existing configuration file as parameter.
+ - One that passes an existing  configuration file, but that throws a configuration exception.
+ - One that passes a correct configuration file.";Equivalence/Exception;No;;;;
+5;configuration/Reader;checkConfiguration;"$configuration = false
+------------------------------------------------------------------------
+$configuration = array('section1', 'not an array!')
+------------------------------------------------------------------------
+$configuration = array('section1', array('database', 'testdb'))
+------------------------------------------------------------------------
+$configuration = array('section1', array(
+    'database', 'testdb',
+    'username', 'postgres',
+    'password', 'postgres',
+    'host', 'localhost',
+    'port', '5433',
+    'typo error in one of the properties', ' julen.pardo@outlook.es'
+))
+------------------------------------------------------------------------
+$configuration = array('section1', array(
+    'database', '', // Empty value!
+    'username', 'postgres',
+    'password', 'postgres',
+    'host', 'localhost',
+    'port', '5433',
+    'email', ' julen.pardo@outlook.es'
+))
+------------------------------------------------------------------------
+$configuration = array('section1', array(
+    'database', 'testdb', // Empty value!
+    'username', 'postgres',
+    'password', 'postgres',
+    'host', 'localhost',
+    'port', 'not a number', // Invalid config format
+    'email', ' julen.pardo@outlook.es'
+))
+------------------------------------------------------------------------
+$configuration = array('section1', array(
+    'database', 'testdb',
+    'username', 'postgres',
+    'password', 'postgres',
+    'host', 'localhost',
+    'port', '5433', 
+    'email', ' julen.pardo@outlook.es'
+))";"The are seven different tests:
+ - One that passes 'false' as configuration, simulating ""parse_ini_file"" error.
+ - One that passes a one level array, simulating that the [section] has not been set in the file.
+ - One that passes an array with not all the required configurations.
+ - One that passes an array with a typo error in one of the properties.
+ - One that passes an array with an empty value for one of the properties.
+ - One that passes an array with the incorrect format for an integer.
+ - One that passes a correct configuration array.";Equivalence/Exception;No;;;;
