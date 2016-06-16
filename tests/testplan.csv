@@ -25,7 +25,8 @@ $configuration = array('section1', array(
     'host', 'localhost',
     'port', '5433',
     'typo error in one of the properties', ' julen.pardo@outlook.es',
-    'connection_threshold', '10'
+    'connection_threshold', '10',
+    'dbsm', 'postgresql'
 ))
 ------------------------------------------------------------------------
 $configuration = array('section1', array(
@@ -35,7 +36,8 @@ $configuration = array('section1', array(
     'host', 'localhost',
     'port', '5433',
     'email', ' julen.pardo@outlook.es',
-    'connection_threshold', '10'
+    'connection_threshold', '10',
+    'dbsm', 'postgresql'
 ))
 ------------------------------------------------------------------------
 $configuration = array('section1', array(
@@ -45,7 +47,8 @@ $configuration = array('section1', array(
     'host', 'localhost',
     'port', 'not a number', // Invalid config format
     'email', ' julen.pardo@outlook.es',
-    'connection_threshold', '10'
+    'connection_threshold', '10',
+    'dbsm', 'postgresql'
 ))
 ------------------------------------------------------------------------
 $configuration = array('section1', array(
@@ -55,12 +58,25 @@ $configuration = array('section1', array(
     'host', 'localhost',
     'port', '5433', 
     'email', ' julen.pardo@outlook.es',
-    'connection_threshold', '10'
-))";"The are seven different tests:
+    'connection_threshold', '10',
+    'dbsm', 'postgresql'
+))
+------------------------------------------------------------------------
+$configuration = array('section1', array(
+    'database', 'testdb',
+    'username', 'postgres',
+    'password', 'postgres',
+    'host', 'localhost',
+    'port', '5433', 
+    'email', ' julen.pardo@outlook.es',
+    'connection_threshold', '10',
+    'dbsm', 'postgresql'
+))";"The are eight different tests:
  - One that passes 'false' as configuration, simulating ""parse_ini_file"" error.
  - One that passes a one level array, simulating that the [section] has not been set in the file.
  - One that passes an array with not all the required configurations.
  - One that passes an array with a typo error in one of the properties.
  - One that passes an array with an empty value for one of the properties.
  - One that passes an array with the incorrect format for an integer.
- - One that passes a correct configuration array.";Equivalence/Exception;Yes;Pass;;Julen Pardo;16/06/2016
+ - One that passes a non admitted value for 'dbms' option.
+ - One that passes a correct configuration array.";Equivalence/Exception;Yes;Partial;;Julen Pardo;16/06/2016

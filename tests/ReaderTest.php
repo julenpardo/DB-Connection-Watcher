@@ -76,6 +76,7 @@ class ReaderTest extends PHPUnit_Framework_TestCase
             port = 5433
             email = julen.pardo@outlook.es
             connection_threshold = 10
+            dmbs = postgresql
         ';
 
         file_put_contents($this->configurationFile, $configuration);
@@ -144,7 +145,8 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'host'     => 'localhost',
                 'port'     => '5433',
                 'typo error' => 'julen.pardo@outlook.es',
-                'connection_threshold' => 10
+                'connection_threshold' => 10,
+                'dbms' => 'postgresql'
             ]
         ];
 
@@ -166,7 +168,8 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'host'     => 'localhost',
                 'port'     => '5433',
                 'typo error' => 'julen.pardo@outlook.es',
-                'connection_threshold' => 10
+                'connection_threshold' => 10,
+                'dbms' => 'postgresql'
             ]
         ];
 
@@ -188,7 +191,8 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'host'     => 'localhost',
                 'port'     => 'not a number',
                 'typo error' => 'julen.pardo@outlook.es',
-                'connection_threshold' => 10
+                'connection_threshold' => 10,
+                'dbms' => 'postgresql'
             ]
         ];
 
@@ -207,7 +211,8 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'host'     => 'localhost',
                 'port'     => '5432',
                 'email' => 'julen.pardo@outlook.es',
-                'connection_threshold' => 10
+                'connection_threshold' => 10,
+                'dbms' => 'postgresql'
             ]
         ];
 
