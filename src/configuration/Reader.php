@@ -14,7 +14,10 @@ class Reader
         'host'                 => 'string',
         'port'                 => 'integer',
         'email'                => 'string',
-        'connection_threshold' => 'integer'
+        'connection_threshold' => 'integer',
+        'dbms'                 => array(
+            'postgresql'
+        )
     );
 
     /**
@@ -56,6 +59,7 @@ class Reader
      * @throws InvalidConfigurationValueException If a property has an incorrect value.
      * @throws InvalidConfigurationValueTypeException If a property has a value of incorrect format.
      * @throws MissingOrExtraConfigurationsException If the .ini file has not the number of expected properties.
+     * @throws NonAcceptedValueException If the .ini has a value in a property that is not between the accepted ones.
      * @throws \Exception If the .ini file has not the correct format.
      */
     private static function checkConfiguration($configuration)
@@ -97,6 +101,12 @@ class Reader
 
                     if ($invalidNumber) {
                         throw new InvalidConfigurationValueTypeException($key, $expectedType, $value, $section);
+                    }
+                } elseif (is_array($expectedType)) {
+                    $nonAcceptedValue = !in_array(strtolower($value), $expectedType);
+
+                    if ($nonAcceptedValue) {
+                        throw new NonAcceptedValueException($key, $section, $expectedType);
                     }
                 }
             }
