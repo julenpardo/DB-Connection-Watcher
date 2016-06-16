@@ -10,7 +10,8 @@ use DBConnectionWatcher\DB\DBFactory;
 use DBConnectionWatcher\DB\PreparedStatementCreationException;
 use DBConnectionWatcher\Mailer\Mailer;
 
-class DBConnectionManager {
+class DBConnectionWatcher
+{
 
     const ERROR_CONFIGURATION_EXCEPTION = 1;
     const ERROR_CONNECTION_EXCEPTION = 2;
