@@ -2,7 +2,7 @@
 
 namespace DBConnectionWatcher\Configuration;
 
-class InvalidConfigurationValueException extends \Exception
+class InvalidConfigurationValueException extends ConfigurationException
 {
     const MESSAGE = "The '%1' configuration is empty.";
 

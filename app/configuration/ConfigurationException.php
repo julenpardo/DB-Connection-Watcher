@@ -2,10 +2,10 @@
 
 namespace DBConnectionWatcher\Configuration;
 
-class FileNotFoundException extends ConfigurationException
+class ConfigurationException extends \Exception
 {
     /**
-     * FileNotFoundException constructor.
+     * ConfigurationException constructor.
      *
      * @param String $message Exception message.
      */

@@ -11,7 +11,7 @@ $configFilePath = 'dbconnectionwatcher.ini' (existing)
 $configFilePath = 'dbconnectionwatcher.ini' (existing)";"There are three different tests for this method:
  - One that passes a non-existing configuration file as parameter.
  - One that passes an existing  configuration file, but that throws a configuration exception.
- - One that passes a correct configuration file.";Equivalence/Exception;No;;;;
+ - One that passes a correct configuration file.";Equivalence/Exception;Yes;Pass;;Julen Pardo;16/06/2016
 5;configuration/Reader;checkConfiguration;"$configuration = false
 ------------------------------------------------------------------------
 $configuration = array('section1', 'not an array!')
@@ -59,4 +59,4 @@ $configuration = array('section1', array(
  - One that passes an array with a typo error in one of the properties.
  - One that passes an array with an empty value for one of the properties.
  - One that passes an array with the incorrect format for an integer.
- - One that passes a correct configuration array.";Equivalence/Exception;No;;;;
+ - One that passes a correct configuration array.";Equivalence/Exception;Yes;Pass;;Julen Pardo;16/06/2016

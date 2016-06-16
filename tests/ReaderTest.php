@@ -1,12 +1,13 @@
 <?php
 
+require_once(dirname(__FILE__) . '/../app/configuration/ConfigurationException.php');
+require_once(dirname(__FILE__) . '/../app/configuration/Reader.php');
 require_once(dirname(__FILE__) . '/../app/configuration/FileNotFoundException.php');
 require_once(dirname(__FILE__) . '/../app/configuration/InvalidConfigurationFormatException.php');
 require_once(dirname(__FILE__) . '/../app/configuration/InvalidConfigurationPropertyException.php');
 require_once(dirname(__FILE__) . '/../app/configuration/InvalidConfigurationValueException.php');
 require_once(dirname(__FILE__) . '/../app/configuration/InvalidConfigurationValueTypeException.php');
 require_once(dirname(__FILE__) . '/../app/configuration/MissingOrExtraConfigurationsException.php');
-require_once(dirname(__FILE__) . '/../app/configuration/Reader.php');
 
 use DBConnectionWatcher\Configuration\Reader;
 
@@ -50,7 +51,7 @@ class ReaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \DBConnectionWatcher\Configuration\ConfigurationException
      */
     public function testReadConfigurationConfigurationException()
     {
@@ -90,7 +91,7 @@ class ReaderTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \DBConnectionWatcher\Configuration\ConfigurationException
      */
     public function testCheckConfigurationFalse()
     {
@@ -207,7 +208,7 @@ class ReaderTest extends PHPUnit_Framework_TestCase
 
         try {
             $method->invokeArgs($this->reader, [$configuration]);
-        } catch (Exception $exception) {
+        } catch (\DBConnectionWatcher\Configuration\ConfigurationException $exception) {
             $this->fail("No exception should be thrown.");
         }
     }

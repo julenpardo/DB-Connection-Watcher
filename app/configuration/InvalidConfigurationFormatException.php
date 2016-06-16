@@ -2,7 +2,7 @@
 
 namespace DBConnectionWatcher\Configuration;
 
-class InvalidConfigurationFormatException extends \Exception
+class InvalidConfigurationFormatException extends ConfigurationException
 {
     const MESSAGE = 'The file has an invalid format (may you forgot to put a [section]?).';
 

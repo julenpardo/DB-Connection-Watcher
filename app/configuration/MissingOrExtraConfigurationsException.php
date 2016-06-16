@@ -2,7 +2,7 @@
 
 namespace DBConnectionWatcher\Configuration;
 
-class MissingOrExtraConfigurationsException extends \Exception
+class MissingOrExtraConfigurationsException extends ConfigurationException
 {
     const MESSAGE = "Missing (or extra) configuration(s) in '%1' section.";
 

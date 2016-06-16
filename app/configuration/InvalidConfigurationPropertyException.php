@@ -2,7 +2,7 @@
 
 namespace DBConnectionWatcher\Configuration;
 
-class InvalidConfigurationPropertyException extends \Exception
+class InvalidConfigurationPropertyException extends ConfigurationException
 {
     const MESSAGE = "Invalid '%1' configuration in '%2' section.";
 

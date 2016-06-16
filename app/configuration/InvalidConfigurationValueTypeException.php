@@ -2,7 +2,7 @@
 
 namespace DBConnectionWatcher\Configuration;
 
-class InvalidConfigurationValueTypeException extends \Exception
+class InvalidConfigurationValueTypeException extends ConfigurationException
 {
     const MESSAGE = "Invalid type of '%1' configuration: expecting %2 type and got '%3' value, in section '%4'.";
 

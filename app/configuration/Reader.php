@@ -35,7 +35,7 @@ class Reader
 
         try {
             self::checkConfiguration($configuration);
-        } catch (\Exception $exception) {
+        } catch (ConfigurationException $exception) {
             throw $exception;
         }
 
@@ -60,7 +60,7 @@ class Reader
     private static function checkConfiguration($configuration)
     {
         if (!$configuration) {
-            throw new \Exception('An error occurred parsing the configuration file.');
+            throw new ConfigurationException('An error occurred parsing the configuration file.');
         }
 
         foreach ($configuration as $section => $data) {
