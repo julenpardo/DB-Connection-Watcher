@@ -20,9 +20,10 @@ class DBFactory
      */
     public static function getInstance($dbConfiguration)
     {
+        if ()
         $dbms = $dbConfiguration['dbms'];
 
-        switch($dbms) {
+        switch ($dbms) {
             case self::DBMS_POSTGRESQL:
                 $database = new PostgreSQL(
                     $dbConfiguration['database'],
