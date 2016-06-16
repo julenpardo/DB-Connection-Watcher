@@ -23,6 +23,20 @@ interface DBInterface
     public function __construct($database, $username, $password, $host = 'localhost', $port = 5432);
 
     /**
+     * Gets the database.
+     *
+     * @return string Database name.
+     */
+    public function getDatabase();
+
+    /**
+     * Gets the host.
+     *
+     * @return string Host name.
+     */
+    public function getHost();
+
+    /**
      * Creates the connection to the database.
      */
     public function connect();
@@ -35,7 +49,7 @@ interface DBInterface
     /**
      * Queries the number of current connections to the database for which the connection has been established.
      *
-     * @return The number of connections.
+     * @return int The number of connections.
      */
     public function queryConnectionNumber();
 }

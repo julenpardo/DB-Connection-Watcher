@@ -36,6 +36,26 @@ class PostgreSQL implements DBInterface
     }
 
     /**
+     * Gets the database.
+     *
+     * @return string Database name.
+     */
+    public function getDatabase()
+    {
+        return $this->database;
+    }
+
+    /**
+     * Gets the host.
+     *
+     * @return string Host name.
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
      * Creates the connection to the database.
      *
      * @throws \Exception If an error occurs when connecting to database, or creating the prepared statement.
