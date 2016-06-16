@@ -20,7 +20,6 @@ class DBFactory
      */
     public static function getInstance($dbConfiguration)
     {
-        if ()
         $dbms = $dbConfiguration['dbms'];
 
         switch ($dbms) {
