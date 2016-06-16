@@ -18,7 +18,7 @@ class InvalidConfigurationValueTypeException extends \Exception
     {
         $message = str_replace('%1', $key, self::MESSAGE);
         $message = str_replace('%2', $expectedType, $message);
-        $message = str_repalce('%3', $value, $message);
+        $message = str_replace('%3', $value, $message);
         $message = str_replace('%4', $section, $message);
 
         parent::__construct($message);
