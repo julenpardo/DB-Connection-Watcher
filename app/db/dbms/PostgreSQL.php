@@ -2,7 +2,9 @@
 
 namespace DBConnectionWatcher\DB\DBMS;
 
+use DBConnectionWatcher\DB\ConnectionException;
 use DBConnectionWatcher\DB\DBInterface;
+use DBConnectionWatcher\DB\PreparedStatementCreationException;
 
 class PostgreSQL implements DBInterface
 {
@@ -43,11 +45,10 @@ class PostgreSQL implements DBInterface
         $connectionString = "host=$this->host port=$this->port dbname=$this->database "
             . "user=$this->username password=$this->password";
 
-        $this->connection = pg_connect($connectionString);
+        $this->connection = @pg_connect($connectionString);
 
         if (!$this->connection) {
-            throw new \Exception('An error occurred when trying to connect to PostgreSQL database: '
-                . pg_last_error($this->connection));
+            throw new ConnectionException('connect');
         }
     }
 
@@ -58,11 +59,10 @@ class PostgreSQL implements DBInterface
      */
     public function disconnect()
     {
-        $connectionClosed = pg_close($this->connection);
+        $connectionClosed = @pg_close($this->connection);
 
         if (!$connectionClosed) {
-            throw new \Exception('An error occurred when closing the PostgreSQL database connection: '
-                . pg_last_error($this->connection));
+            throw new ConnectionException('close');
         }
     }
 
@@ -86,11 +86,10 @@ class PostgreSQL implements DBInterface
             . "WHERE datname = $1 "
             . 'GROUP BY activity.datid';
 
-        $prepared = pg_prepare($this->connection, self::CONNECTION_NUMBER_STATEMENT, $connectionNumberSql);
+        $prepared = @pg_prepare($this->connection, self::CONNECTION_NUMBER_STATEMENT, $connectionNumberSql);
 
         if (!$prepared) {
-            throw new \Exception('An error occurred when creating the prepared statement for the query: '
-                . pg_last_error($this->connection));
+            throw new PreparedStatementCreationException();
         }
 
         $queryResult = pg_execute($this->connection, self::CONNECTION_NUMBER_STATEMENT, array($this->database));

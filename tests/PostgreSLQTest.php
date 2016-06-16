@@ -1,5 +1,7 @@
 <?php
 
+require_once(dirname(__FILE__) . '/../app/db/ConnectionException.php');
+require_once(dirname(__FILE__) . '/../app/db/PreparedStatementCreationException.php');
 require_once(dirname(__FILE__) . '/../app/db/DBInterface.php');
 require_once(dirname(__FILE__) . '/../app/db/dbms/PostgreSQL.php');
 
@@ -27,7 +29,7 @@ class PostgreSQLTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \DBConnectionWatcher\DB\ConnectionException
      */
     public function testConnectException()
     {
@@ -60,7 +62,7 @@ class PostgreSQLTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \DBConnectionWatcher\DB\ConnectionException
      */
     public function testDisconnectException()
     {
@@ -123,7 +125,7 @@ class PostgreSQLTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Exception
+     * @expectedException \DBConnectionWatcher\DB\PreparedStatementCreationException
      */
     public function testQueryConnectionNumberException()
     {
