@@ -142,7 +142,8 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'password' => 'postgres',
                 'host'     => 'localhost',
                 'port'     => '5433',
-                'typo error' => 'julen.pardo@outlook.es'
+                'typo error' => 'julen.pardo@outlook.es',
+                'connection_threshold' => 10
             ]
         ];
 
@@ -163,7 +164,8 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'password' => 'postgres',
                 'host'     => 'localhost',
                 'port'     => '5433',
-                'typo error' => 'julen.pardo@outlook.es'
+                'typo error' => 'julen.pardo@outlook.es',
+                'connection_threshold' => 10
             ]
         ];
 
@@ -184,7 +186,8 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'password' => 'postgres',
                 'host'     => 'localhost',
                 'port'     => 'not a number',
-                'typo error' => 'julen.pardo@outlook.es'
+                'typo error' => 'julen.pardo@outlook.es',
+                'connection_threshold' => 10
             ]
         ];
 
@@ -202,7 +205,8 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'password' => 'postgres',
                 'host'     => 'localhost',
                 'port'     => '5432',
-                'email' => 'julen.pardo@outlook.es'
+                'email' => 'julen.pardo@outlook.es',
+                'connection_threshold' => 10
             ]
         ];
 

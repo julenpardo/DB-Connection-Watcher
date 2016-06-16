@@ -8,12 +8,13 @@ define('DEFAULT_CONFIG_PATH', dirname(__FILE__) . '/../../' . DEFAULT_CONFIG_FIL
 class Reader
 {
     private static $fieldsAndTypes = array(
-        'database' => 'string',
-        'username' => 'string',
-        'password' => 'string',
-        'host'     => 'string',
-        'port'     => 'integer',
-        'email'    => 'string'
+        'database'             => 'string',
+        'username'             => 'string',
+        'password'             => 'string',
+        'host'                 => 'string',
+        'port'                 => 'integer',
+        'email'                => 'string',
+        'connection_threshold' => 'integer'
     );
 
     /**
