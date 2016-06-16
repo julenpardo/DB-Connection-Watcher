@@ -8,6 +8,7 @@ require_once(dirname(__FILE__) . '/../src/configuration/InvalidConfigurationProp
 require_once(dirname(__FILE__) . '/../src/configuration/InvalidConfigurationValueException.php');
 require_once(dirname(__FILE__) . '/../src/configuration/InvalidConfigurationValueTypeException.php');
 require_once(dirname(__FILE__) . '/../src/configuration/MissingOrExtraConfigurationsException.php');
+require_once(dirname(__FILE__) . '/../src/configuration/NonAcceptedValueException.php');
 
 use DBConnectionWatcher\Configuration\Reader;
 
@@ -76,7 +77,7 @@ class ReaderTest extends PHPUnit_Framework_TestCase
             port = 5433
             email = julen.pardo@outlook.es
             connection_threshold = 10
-            dmbs = postgresql
+            dbms = postgresql
         ';
 
         file_put_contents($this->configurationFile, $configuration);
@@ -193,6 +194,29 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'typo error' => 'julen.pardo@outlook.es',
                 'connection_threshold' => 10,
                 'dbms' => 'postgresql'
+            ]
+        ];
+
+        $method->invokeArgs($this->reader, [$configuration]);
+    }
+
+    /**
+     * @expectedException \DBConnectionWatcher\Configuration\NonAcceptedValueException
+     */
+    public function testCheckConfigurationNonAcceptedValueException()
+    {
+        $method = self::get_method('checkConfiguration');
+
+        $configuration = [
+            'section 1' => [
+                'database' => 'testdb',
+                'username' => 'postgres',
+                'password' => 'postgres',
+                'host'     => 'localhost',
+                'port'     => '5432',
+                'email' => 'julen.pardo@outlook.es',
+                'connection_threshold' => 10,
+                'dbms' => 'non exiting dbms'
             ]
         ];
 
