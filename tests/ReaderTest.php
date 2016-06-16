@@ -201,7 +201,7 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'password' => 'postgres',
                 'host'     => 'localhost',
                 'port'     => '5432',
-                'typo error' => 'julen.pardo@outlook.es'
+                'email' => 'julen.pardo@outlook.es'
             ]
         ];
 
