@@ -102,7 +102,7 @@ class Reader
                     if ($invalidNumber) {
                         throw new InvalidConfigurationValueTypeException($key, $expectedType, $value, $section);
                     }
-                } else if(is_array($expectedType)) {
+                } elseif (is_array($expectedType)) {
                     $nonAcceptedValue = !in_array(strtolower($value), $expectedType);
 
                     if ($nonAcceptedValue) {
