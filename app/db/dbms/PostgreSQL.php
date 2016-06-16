@@ -2,7 +2,9 @@
 
 namespace DBConnectionWatcher\DB\DBMS;
 
+use DBConnectionWatcher\DB\ConnectionException;
 use DBConnectionWatcher\DB\DBInterface;
+use DBConnectionWatcher\DB\PreparedStatementCreationException;
 
 class PostgreSQL implements DBInterface
 {
@@ -46,8 +48,7 @@ class PostgreSQL implements DBInterface
         $this->connection = pg_connect($connectionString);
 
         if (!$this->connection) {
-            throw new \Exception('An error occurred when trying to connect to PostgreSQL database: '
-                . pg_last_error($this->connection));
+            throw new ConnectionException('connect', pg_last_error($this->connection));
         }
     }
 
@@ -61,8 +62,7 @@ class PostgreSQL implements DBInterface
         $connectionClosed = pg_close($this->connection);
 
         if (!$connectionClosed) {
-            throw new \Exception('An error occurred when closing the PostgreSQL database connection: '
-                . pg_last_error($this->connection));
+            throw new ConnectionException('close', pg_last_error($this->connection));
         }
     }
 
@@ -89,8 +89,7 @@ class PostgreSQL implements DBInterface
         $prepared = pg_prepare($this->connection, self::CONNECTION_NUMBER_STATEMENT, $connectionNumberSql);
 
         if (!$prepared) {
-            throw new \Exception('An error occurred when creating the prepared statement for the query: '
-                . pg_last_error($this->connection));
+            throw new PreparedStatementCreationException(pg_last_error($this->connection));
         }
 
         $queryResult = pg_execute($this->connection, self::CONNECTION_NUMBER_STATEMENT, array($this->database));
