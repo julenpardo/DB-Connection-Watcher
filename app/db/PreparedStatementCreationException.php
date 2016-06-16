@@ -9,10 +9,10 @@ class PreparedStatementCreationException extends \Exception
     /**
      * PreparedStatementCreationException constructor.
      *
-     * @param string $pgError PostgreSQL error string.
+     * @param string $errorMessage DBMS error message.
      */
-    public function __construct($pgError)
+    public function __construct($errorMessage = '')
     {
-        parent::__construct(self::MESSAGE . $pgError);
+        parent::__construct(self::MESSAGE . $errorMessage);
     }
 }

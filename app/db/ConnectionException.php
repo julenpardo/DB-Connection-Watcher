@@ -10,12 +10,12 @@ class ConnectionException extends \Exception
      * ConnectionException constructor.
      *
      * @param string $action If opening or closing.
-     * @param int $pgError PostgreSQL error string.
+     * @param string $errorMessage DBMS error message.
      */
-    public function __construct($action, $pgError)
+    public function __construct($action, $errorMessage = '')
     {
         $message = str_replace('%1', $action, self::MESSAGE);
 
-        parent::__construct($message . $pgError);
+        parent::__construct($message . $errorMessage);
     }
 }
