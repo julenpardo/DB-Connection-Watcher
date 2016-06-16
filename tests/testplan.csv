@@ -24,7 +24,8 @@ $configuration = array('section1', array(
     'password', 'postgres',
     'host', 'localhost',
     'port', '5433',
-    'typo error in one of the properties', ' julen.pardo@outlook.es'
+    'typo error in one of the properties', ' julen.pardo@outlook.es',
+    'connection_threshold', '10'
 ))
 ------------------------------------------------------------------------
 $configuration = array('section1', array(
@@ -33,7 +34,8 @@ $configuration = array('section1', array(
     'password', 'postgres',
     'host', 'localhost',
     'port', '5433',
-    'email', ' julen.pardo@outlook.es'
+    'email', ' julen.pardo@outlook.es',
+    'connection_threshold', '10'
 ))
 ------------------------------------------------------------------------
 $configuration = array('section1', array(
@@ -42,7 +44,8 @@ $configuration = array('section1', array(
     'password', 'postgres',
     'host', 'localhost',
     'port', 'not a number', // Invalid config format
-    'email', ' julen.pardo@outlook.es'
+    'email', ' julen.pardo@outlook.es',
+    'connection_threshold', '10'
 ))
 ------------------------------------------------------------------------
 $configuration = array('section1', array(
@@ -51,7 +54,8 @@ $configuration = array('section1', array(
     'password', 'postgres',
     'host', 'localhost',
     'port', '5433', 
-    'email', ' julen.pardo@outlook.es'
+    'email', ' julen.pardo@outlook.es',
+    'connection_threshold', '10'
 ))";"The are seven different tests:
  - One that passes 'false' as configuration, simulating ""parse_ini_file"" error.
  - One that passes a one level array, simulating that the [section] has not been set in the file.

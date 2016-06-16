@@ -75,6 +75,7 @@ class ReaderTest extends PHPUnit_Framework_TestCase
             host = localhost
             port = 5433
             email = julen.pardo@outlook.es
+            connection_threshold = 10
         ';
 
         file_put_contents($this->configurationFile, $configuration);
@@ -85,8 +86,8 @@ class ReaderTest extends PHPUnit_Framework_TestCase
             $actual = Reader::readConfiguration($this->configurationFile);
 
             $this->assertEquals($expected, $actual);
-        } catch (Exception $exception) {
-            $this->fail("No exception should be thrown.");
+        } catch (\DBConnectionWatcher\Configuration\ConfigurationException $exception) {
+            $this->fail('No exception should be thrown: ' . $exception->getMessage());
         }
     }
 
@@ -142,7 +143,8 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'password' => 'postgres',
                 'host'     => 'localhost',
                 'port'     => '5433',
-                'typo error' => 'julen.pardo@outlook.es'
+                'typo error' => 'julen.pardo@outlook.es',
+                'connection_threshold' => 10
             ]
         ];
 
@@ -163,7 +165,8 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'password' => 'postgres',
                 'host'     => 'localhost',
                 'port'     => '5433',
-                'typo error' => 'julen.pardo@outlook.es'
+                'typo error' => 'julen.pardo@outlook.es',
+                'connection_threshold' => 10
             ]
         ];
 
@@ -184,7 +187,8 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'password' => 'postgres',
                 'host'     => 'localhost',
                 'port'     => 'not a number',
-                'typo error' => 'julen.pardo@outlook.es'
+                'typo error' => 'julen.pardo@outlook.es',
+                'connection_threshold' => 10
             ]
         ];
 
@@ -202,14 +206,15 @@ class ReaderTest extends PHPUnit_Framework_TestCase
                 'password' => 'postgres',
                 'host'     => 'localhost',
                 'port'     => '5432',
-                'email' => 'julen.pardo@outlook.es'
+                'email' => 'julen.pardo@outlook.es',
+                'connection_threshold' => 10
             ]
         ];
 
         try {
             $method->invokeArgs($this->reader, [$configuration]);
         } catch (\DBConnectionWatcher\Configuration\ConfigurationException $exception) {
-            $this->fail("No exception should be thrown.");
+            $this->fail('No exception should be thrown: ' . $exception->getMessage());
         }
     }
 }

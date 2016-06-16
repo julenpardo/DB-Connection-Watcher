@@ -20,7 +20,8 @@ HTML;
 
     const THRESHOLD_RETURN_BEHIND_SUBJECT = "Connection number in '%1' database is again behind the threshold";
     const THRESHOLD_RETURN_BEHIND_MESSAGE = <<< HTML
-        <html><body><p>The following database has returned to normal situation, after having exceeded the configured threshold:</p>
+        <html><body><p>The following database has returned to normal situation, after having exceeded the configured
+        threshold:</p>
         <ul>
             <li>Database: <b>%1</b></li>
             <li>In host: <b>%2</b></li>
