@@ -99,3 +99,16 @@ $configuration = array(
 )";"The are two different tests:
  - One that passes an non existing dbms.
  - One that passes a correct configuration an returns the instance correctly.";Equivalence/Exception;Yes;Pass;;Julen Pardo;16/06/2016
+7;DBConnectionWatcher;checkStatus;"$db = <db object>
+$email = 'julen.pardo@outlook.es'
+$connectionThreshold = 5";"There are five different tests for this method:
+ - One that checks the status being the connection number below the threshold.
+ - One that checks the status being the connection number the same as the threshold.
+ - One that checks the status being the connection number above the theshold and sends the email correctly.
+ - One that passes an invalid db object that causes an exception.
+ - One that simulates an improper configuration of SMTP, and throws a mailing exception.";Equivalence/Exception;No;;The mailing class will be mocked.;;
+8;DBConnectionWatcher;run;-;"There are different tests for this method:
+ - One for an improper configuration file, that returns an ERROR_CONFIGURATION_EXCEPTION.
+ - One for a config file with incorrect credentials for database, that returns ERROR_CONNECTION_EXCEPTION.
+ - One simulating an improper configuration of SMTP, that returns ERROR_MAIL_SEND_EXCEPTION.
+ - One with proper configuration, that returns SUCCESS.";Equivalence/Exception;No;;The mailing class will be mocked.;;
