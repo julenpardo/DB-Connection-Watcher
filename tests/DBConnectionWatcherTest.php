@@ -16,7 +16,7 @@ use DBConnectionWatcher\DB\DBMS\PostgreSQL;
 class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
 {
     protected $dbConnectionWatcher;
-    protected $configurationFile = 'configurationTest.ini';
+    protected $configurationFile = DEFAULT_CONFIG_PATH;
 
     protected function setUp()
     {

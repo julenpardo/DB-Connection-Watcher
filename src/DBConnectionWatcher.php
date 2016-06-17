@@ -2,6 +2,9 @@
 
 namespace DBConnectionWatcher;
 
+define('DEFAULT_CONFIG_FILENAME', 'dbconnectionwatcher.ini');
+define('DEFAULT_CONFIG_PATH', dirname(__FILE__) . '/../' . DEFAULT_CONFIG_FILENAME);
+
 use DBConnectionWatcher\Configuration\ConfigurationException;
 use DBConnectionWatcher\DB\ConnectionException;
 use DBConnectionWatcher\DB\DBInterface;
@@ -13,6 +16,7 @@ use DBConnectionWatcher\Mailer\MailSendException;
 
 class DBConnectionWatcher
 {
+
     const ERROR_CONFIGURATION_EXCEPTION = 1;
     const ERROR_CONNECTION_EXCEPTION = 2;
     const ERROR_PREPARED_STATEMENT_EXCEPTION = 3;
@@ -49,7 +53,7 @@ class DBConnectionWatcher
     public function run()
     {
         try {
-            $configuration = Reader::readConfiguration();
+            $configuration = Reader::readConfiguration(DEFAULT_CONFIG_PATH);
         } catch (ConfigurationException $configurationException) {
             error_log($configurationException->getMessage());
             return self::ERROR_CONFIGURATION_EXCEPTION;
