@@ -240,7 +240,7 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
     {
         $expected = DBConnectionWatcher::ERROR_CONNECTION_EXCEPTION;
         $configuration = '[section 1]
-            database = testdb
+            database = postgres
             username = non_existing_user
             password = postgres
             host = localhost
@@ -257,11 +257,11 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testRunConnectionMailSendCode()
+    public function testRunMailSendExceptionCode()
     {
         $expected = DBConnectionWatcher::ERROR_MAIL_SEND_EXCEPTION;
         $configuration = '[section 1]
-            database = testdb
+            database = postgres
             username = postgres
             password = postgres
             host = localhost
@@ -285,11 +285,11 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
         $this->assertEquals($expected, $actual);
     }
 
-    public function testRunConnection()
+    public function testRun()
     {
         $expected = DBConnectionWatcher::SUCCESS;
         $configuration = '[section 1]
-            database = testdb
+            database = postgres
             username = postgres
             password = postgres
             host = localhost

@@ -62,7 +62,7 @@ class DBConnectionWatcher
         $status = self::SUCCESS;
 
         foreach ($configuration as $dbConfiguration) {
-            $db = DBFactory::getInstance(array_values($dbConfiguration));
+            $db = DBFactory::getInstance($dbConfiguration);
             $email = $dbConfiguration['email'];
             $connectionThreshold = $dbConfiguration['connection_threshold'];
 
