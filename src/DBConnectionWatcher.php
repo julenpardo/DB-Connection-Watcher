@@ -7,15 +7,16 @@ use DBConnectionWatcher\DB\ConnectionException;
 use DBConnectionWatcher\DB\DBInterface;
 use DBConnectionWatcher\Configuration\Reader;
 use DBConnectionWatcher\DB\DBFactory;
+use DBConnectionWatcher\DB\MailSendException;
 use DBConnectionWatcher\DB\PreparedStatementCreationException;
 use DBConnectionWatcher\Mailer\Mailer;
 
 class DBConnectionWatcher
 {
-
     const ERROR_CONFIGURATION_EXCEPTION = 1;
     const ERROR_CONNECTION_EXCEPTION = 2;
     const ERROR_PREPARED_STATEMENT_EXCEPTION = 3;
+    const ERROR_MAIL_SEND_EXCEPTION = 4;
     const SUCCESS = 0;
 
     /**
@@ -30,6 +31,7 @@ class DBConnectionWatcher
         try {
             $configuration = Reader::readConfiguration();
         } catch (ConfigurationException $configurationException) {
+            error_log($configurationException->getMessage());
             return self::ERROR_CONFIGURATION_EXCEPTION;
         }
 
@@ -48,6 +50,9 @@ class DBConnectionWatcher
             } catch (PreparedStatementCreationException $preparedStatementException) {
                 error_log($preparedStatementException->getMessage());
                 $status = self::ERROR_PREPARED_STATEMENT_EXCEPTION;
+            } catch (MailSendException $mailSendException) {
+                error_log($mailSendException->getMessage());
+                $status = self::ERROR_MAIL_SEND_EXCEPTION;
             }
         }
 
@@ -62,7 +67,8 @@ class DBConnectionWatcher
      * @param string $email The emails to send the notifications to.
      * @param int $connectionThreshold The connection threshold that, once exceeded, generates the alert.
      * @throws ConnectionException If an error occurs connecting/disconnecting to database.
-     * @throws PreparedStatementCreationException If an error occur
+     * @throws PreparedStatementCreationException If an error occurs creating the prepared statement for the query.
+     * @throws MailSendException If an error occurs sending the mail.
      */
     protected static function checkStatus($db, $email, $connectionThreshold)
     {
@@ -85,6 +91,8 @@ class DBConnectionWatcher
             throw $connectionException;
         } catch (PreparedStatementCreationException $preparedStatementException) {
             throw $preparedStatementException;
+        } catch (MailSendException $mailSendException) {
+            throw $mailSendException;
         }
     }
 }
