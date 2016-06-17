@@ -16,10 +16,16 @@ use DBConnectionWatcher\DB\DBMS\PostgreSQL;
 class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
 {
     protected $dbConnectionWatcher;
+    protected $configurationFile = 'configurationTest.ini';
 
     protected function setUp()
     {
         $this->dbConnectionWatcher = new DBConnectionWatcher();
+    }
+
+    protected function tearDown()
+    {
+        $this->deleteConfigFileIfExists();
     }
 
     protected function getMethod($name)
@@ -51,6 +57,13 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
     {
         foreach ($connections as $connection) {
             pg_close($connection);
+        }
+    }
+
+    protected function deleteConfigFileIfExists()
+    {
+        if (file_exists($this->configurationFile)) {
+            unlink($this->configurationFile);
         }
     }
 
@@ -213,5 +226,83 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
 
             $this->fail('No exception should be thrown: ' . $exception->getMessage());
         }
+    }
+
+    public function testRunConfigurationExceptionCode()
+    {
+        $expected = DBConnectionWatcher::ERROR_CONFIGURATION_EXCEPTION;
+        $actual = $this->dbConnectionWatcher->run();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testRunConnectionExceptionCode()
+    {
+        $expected = DBConnectionWatcher::ERROR_CONNECTION_EXCEPTION;
+        $configuration = '[section 1]
+            database = testdb
+            username = non_existing_user
+            password = postgres
+            host = localhost
+            port = 5433
+            email = julen.pardo@outlook.es
+            connection_threshold = 10
+            dbms = postgresql
+        ';
+
+        file_put_contents($this->configurationFile, $configuration);
+
+        $actual = $this->dbConnectionWatcher->run();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testRunConnectionMailSendCode()
+    {
+        $expected = DBConnectionWatcher::ERROR_MAIL_SEND_EXCEPTION;
+        $configuration = '[section 1]
+            database = testdb
+            username = postgres
+            password = postgres
+            host = localhost
+            port = 5433
+            email = julen.pardo@outlook.es
+            connection_threshold = 10
+            dbms = postgresql
+        ';
+
+        file_put_contents($this->configurationFile, $configuration);
+
+        $mailer = $this->getMock('DBConnectionWatcher\Mailer\Mailer');
+        $mailer->expects($this->once())
+            ->method('sendThresholdExceededMail')
+            ->will($this->throwException(new \DBConnectionWatcher\Mailer\MailSendException()));
+
+        $this->dbConnectionWatcher->setMailer($mailer);
+
+        $actual = $this->dbConnectionWatcher->run();
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testRunConnection()
+    {
+        $expected = DBConnectionWatcher::SUCCESS;
+        $configuration = '[section 1]
+            database = testdb
+            username = postgres
+            password = postgres
+            host = localhost
+            port = 5433
+            email = julen.pardo@outlook.es
+            connection_threshold = 10
+            dbms = postgresql
+        ';
+
+        file_put_contents($this->configurationFile, $configuration);
+
+        $actual = $this->dbConnectionWatcher->run();
+
+        $this->assertEquals($expected, $actual);
     }
 }

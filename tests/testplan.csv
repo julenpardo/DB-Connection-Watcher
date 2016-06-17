@@ -106,7 +106,9 @@ $connectionThreshold = 5";"There are five different tests for this method:
  - One that checks the status being the connection number the same as the threshold.
  - One that checks the status being the connection number above the theshold and sends the email correctly.
  - One that passes an invalid db object that causes an exception.
- - One that simulates an improper configuration of SMTP, and throws a mailing exception.";Equivalence/Exception;No;;The mailing class will be mocked.;;
+ - One that simulates an improper configuration of SMTP, and throws a mailing exception.";Equivalence/Exception;Yes;"Pass 5/6; skipped 6th";"The mailing class will be mocked.
+The test that checks that the mail has been sent correctly is skipped, because no way has been found to mock built-in mail() function.
+";Julen Pardo;17/06/2016
 8;DBConnectionWatcher;run;-;"There are different tests for this method:
  - One for an improper configuration file, that returns an ERROR_CONFIGURATION_EXCEPTION.
  - One for a config file with incorrect credentials for database, that returns ERROR_CONNECTION_EXCEPTION.
