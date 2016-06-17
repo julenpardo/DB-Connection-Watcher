@@ -113,4 +113,4 @@ The test that checks that the mail has been sent correctly is skipped, because n
  - One for an improper configuration file, that returns an ERROR_CONFIGURATION_EXCEPTION.
  - One for a config file with incorrect credentials for database, that returns ERROR_CONNECTION_EXCEPTION.
  - One simulating an improper configuration of SMTP, that returns ERROR_MAIL_SEND_EXCEPTION.
- - One with proper configuration, that returns SUCCESS.";Equivalence/Exception;No;;The mailing class will be mocked.;;
+ - One with proper configuration, that returns SUCCESS.";Equivalence/Exception;Yes;Pass;The mailing class will be mocked.;Julen Pardo;17/06/2016
