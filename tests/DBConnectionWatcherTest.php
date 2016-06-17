@@ -260,16 +260,23 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
     public function testRunMailSendExceptionCode()
     {
         $expected = DBConnectionWatcher::ERROR_MAIL_SEND_EXCEPTION;
-        $configuration = '[section 1]
-            database = postgres
-            username = postgres
-            password = postgres
-            host = localhost
-            port = 5433
+        $connectionThreshold = 2;
+        $database = 'postgres';
+        $username = 'postgres';
+        $password = 'postgres';
+        $host     = 'localhost';
+        $port     = 5433;
+
+        $configuration = "[section 1]
+            database = $database
+            username = $username
+            password = $password
+            host = $host
+            port = $port
             email = julen.pardo@outlook.es
-            connection_threshold = 10
+            connection_threshold = $connectionThreshold
             dbms = postgresql
-        ';
+        ";
 
         file_put_contents($this->configurationFile, $configuration);
 
@@ -280,9 +287,14 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
 
         $this->dbConnectionWatcher->setMailer($mailer);
 
+        $connections = $this->createDatabaseConnections($database, $username, $password, $host, $port,
+            $connectionThreshold + 1);
+
         $actual = $this->dbConnectionWatcher->run();
 
         $this->assertEquals($expected, $actual);
+
+        $this->closeConnections($connections);
     }
 
     public function testRun()
