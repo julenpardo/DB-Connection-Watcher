@@ -7,9 +7,9 @@ use DBConnectionWatcher\DB\ConnectionException;
 use DBConnectionWatcher\DB\DBInterface;
 use DBConnectionWatcher\Configuration\Reader;
 use DBConnectionWatcher\DB\DBFactory;
-use DBConnectionWatcher\DB\MailSendException;
 use DBConnectionWatcher\DB\PreparedStatementCreationException;
 use DBConnectionWatcher\Mailer\Mailer;
+use DBConnectionWatcher\Mailer\MailSendException;
 
 class DBConnectionWatcher
 {
@@ -19,6 +19,26 @@ class DBConnectionWatcher
     const ERROR_MAIL_SEND_EXCEPTION = 4;
     const SUCCESS = 0;
 
+    protected $mailer;
+
+    /**
+     * DBConnectionWatcher constructor.
+     */
+    public function __construct()
+    {
+        $this->mailer = new Mailer();
+    }
+
+    /**
+     * Mailer object setter. This is only for mocking in tests.
+     *
+     * @param Mailer $mailer The mailer instance.
+     */
+    public function setMailer($mailer)
+    {
+        $this->mailer = $mailer;
+    }
+
     /**
      * The "main" function: reads the configuration, and checks the state of each database read from each configured
      * database.
@@ -26,7 +46,7 @@ class DBConnectionWatcher
      * @return int Status code; 0 if no error happened, others if an error occurred. Yes, it can be overwritten. But
      * only one value can be returned.
      */
-    public static function run()
+    public function run()
     {
         try {
             $configuration = Reader::readConfiguration();
@@ -43,7 +63,7 @@ class DBConnectionWatcher
             $connectionThreshold = $dbConfiguration['connection_threshold'];
 
             try {
-                self::checkStatus($db, $email, $connectionThreshold);
+                $this->checkStatus($db, $email, $connectionThreshold);
             } catch (ConnectionException $connectionException) {
                 error_log($connectionException->getMessage());
                 $status = self::ERROR_CONNECTION_EXCEPTION;
@@ -70,14 +90,14 @@ class DBConnectionWatcher
      * @throws PreparedStatementCreationException If an error occurs creating the prepared statement for the query.
      * @throws MailSendException If an error occurs sending the mail.
      */
-    protected static function checkStatus($db, $email, $connectionThreshold)
+    protected function checkStatus($db, $email, $connectionThreshold)
     {
         try {
             $db->connect();
             $currentConnections = $db->queryConnectionNumber();
 
             if ($currentConnections > $connectionThreshold) {
-                Mailer::sendThresholdExceededMail(
+                $this->mailer->sendThresholdExceededMail(
                     $email,
                     $db->getDatabase(),
                     $db->getHost(),

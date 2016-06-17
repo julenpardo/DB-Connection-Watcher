@@ -2,8 +2,6 @@
 
 namespace DBConnectionWatcher\Mailer;
 
-use DBConnectionWatcher\DB\MailSendException;
-
 class Mailer
 {
     const MAIL_HEADERS = "MIME-Version: 1.0\r\nContent-Type: text/html\r\n\r\n";
@@ -41,7 +39,7 @@ HTML;
      * @param int $threshold Connection threshold that generates the alerts.
      * @throws MailSendException If an error occurs sending the mail.
      */
-    public static function sendThresholdExceededMail($to, $database, $host, $connectionNumber, $threshold)
+    public function sendThresholdExceededMail($to, $database, $host, $connectionNumber, $threshold)
     {
         $subject = str_replace('%1', $database, self::THRESHOLD_EXCEEDED_SUBJECT);
 
@@ -66,7 +64,7 @@ HTML;
      * @param int $threshold Connection threshold that generates the alerts.
      * @throws MailSendException If an error occurs sending the mail.
      */
-    public static function sendBehindThresholdMail($to, $database, $host, $threshold)
+    public function sendBehindThresholdMail($to, $database, $host, $threshold)
     {
         $subject = str_replace('%1', $database, self::THRESHOLD_RETURN_BEHIND_SUBJECT);
 

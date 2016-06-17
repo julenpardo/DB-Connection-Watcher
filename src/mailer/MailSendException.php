@@ -1,6 +1,6 @@
 <?php
 
-namespace DBConnectionWatcher\DB;
+namespace DBConnectionWatcher\Mailer;
 
 class MailSendException extends \Exception
 {
