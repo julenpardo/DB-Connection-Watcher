@@ -68,12 +68,10 @@ class DBConnectionWatcherTest extends PHPUnit_Framework_Testcase
 
         // The key part of the test is to assert that 'sendThresholdExceededMail' method is not called.
         $mailer = $this->getMock('DBConnectionWatcher\Mailer\Mailer');
-        $mailer->expects($this->once())
-            ->method('sendThresholdExceededMail')
-            ->with($email, $database, $host, $connectionThreshold - 1, $connectionThreshold);
+        $mailer->expects($this->never())
+            ->method('sendThresholdExceededMail');
 
         $this->dbConnectionWatcher->setMailer($mailer);
-
 
         $connections = $this->createDatabaseConnections($database, $username, $password, $host, $port,
             $connectionThreshold - 1);

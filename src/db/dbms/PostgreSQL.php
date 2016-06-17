@@ -65,7 +65,7 @@ class PostgreSQL implements DBInterface
         $connectionString = "host=$this->host port=$this->port dbname=$this->database "
             . "user=$this->username password=$this->password";
 
-        $this->connection = @pg_connect($connectionString);
+        $this->connection = @pg_connect($connectionString, PGSQL_CONNECT_FORCE_NEW);
 
         if (!$this->connection) {
             throw new ConnectionException('connect');
