@@ -37,9 +37,9 @@ HTML;
      * @param string $host The database host.
      * @param int $connectionNumber The current connection number.
      * @param int $threshold Connection threshold that generates the alerts.
-     * @return bool If the mail has been correctly sent or not.
+     * @throws MailSendException If an error occurs sending the mail.
      */
-    public static function sendThresholdExceededMail($to, $database, $host, $connectionNumber, $threshold)
+    public function sendThresholdExceededMail($to, $database, $host, $connectionNumber, $threshold)
     {
         $subject = str_replace('%1', $database, self::THRESHOLD_EXCEEDED_SUBJECT);
 
@@ -50,7 +50,9 @@ HTML;
 
         $sent = mail($to, $subject, $message, self::MAIL_HEADERS);
 
-        return $sent;
+        if (!$sent) {
+            throw new MailSendException();
+        }
     }
 
     /**
@@ -60,9 +62,9 @@ HTML;
      * @param string $database The database name.
      * @param string $host The database host.
      * @param int $threshold Connection threshold that generates the alerts.
-     * @return bool If the mail has been correctly sent or not.
+     * @throws MailSendException If an error occurs sending the mail.
      */
-    public static function sendBehindThresholdMail($to, $database, $host, $threshold)
+    public function sendBehindThresholdMail($to, $database, $host, $threshold)
     {
         $subject = str_replace('%1', $database, self::THRESHOLD_RETURN_BEHIND_SUBJECT);
 
@@ -72,6 +74,8 @@ HTML;
 
         $sent = mail($to, $subject, $message, self::MAIL_HEADERS);
 
-        return $sent;
+        if (!$sent) {
+            throw new MailSendException();
+        }
     }
 }

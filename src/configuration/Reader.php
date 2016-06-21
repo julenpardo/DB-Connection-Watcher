@@ -2,9 +2,6 @@
 
 namespace DBConnectionWatcher\Configuration;
 
-define('DEFAULT_CONFIG_FILENAME', 'dbconnectionwatcher.ini');
-define('DEFAULT_CONFIG_PATH', dirname(__FILE__) . '/../../' . DEFAULT_CONFIG_FILENAME);
-
 class Reader
 {
     private static $fieldsAndTypes = array(
@@ -29,7 +26,7 @@ class Reader
      * @throws \DBConnectionWatcher\Configuration\FileNotFoundException If the file has not been found.
      * @throws \Exception If the configuration file has not been properly written.
      */
-    public static function readConfiguration($configFilePath = DEFAULT_CONFIG_PATH)
+    public static function readConfiguration($configFilePath)
     {
         if (!file_exists($configFilePath)) {
             throw new FileNotFoundException("File '$configFilePath' not found.");
