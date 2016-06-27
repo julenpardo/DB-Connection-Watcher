@@ -54,28 +54,26 @@ class DBConnectionWatcher
     {
         try {
             $configuration = Reader::readConfiguration(DEFAULT_CONFIG_PATH);
+
+            foreach ($configuration as $dbConfiguration) {
+                $db = DBFactory::getInstance($dbConfiguration);
+                $email = $dbConfiguration['email'];
+                $connectionThreshold = $dbConfiguration['connection_threshold'];
+
+                $this->checkStatus($db, $email, $connectionThreshold);
+            }
         } catch (ConfigurationException $configurationException) {
             error_log($configurationException->getMessage());
             $this->terminate(self::ERROR_CONFIGURATION_EXCEPTION);
-        }
-
-        foreach ($configuration as $dbConfiguration) {
-            $db = DBFactory::getInstance($dbConfiguration);
-            $email = $dbConfiguration['email'];
-            $connectionThreshold = $dbConfiguration['connection_threshold'];
-
-            try {
-                $this->checkStatus($db, $email, $connectionThreshold);
-            } catch (ConnectionException $connectionException) {
-                error_log($connectionException->getMessage());
-                $this->terminate(self::ERROR_CONNECTION_EXCEPTION);
-            } catch (PreparedStatementCreationException $preparedStatementException) {
-                error_log($preparedStatementException->getMessage());
-                $this->terminate(self::ERROR_PREPARED_STATEMENT_EXCEPTION);
-            } catch (MailSendException $mailSendException) {
-                error_log($mailSendException->getMessage());
-                $this->terminate(self::ERROR_MAIL_SEND_EXCEPTION);
-            }
+        } catch (ConnectionException $connectionException) {
+            error_log($connectionException->getMessage());
+            $this->terminate(self::ERROR_CONNECTION_EXCEPTION);
+        } catch (PreparedStatementCreationException $preparedStatementException) {
+            error_log($preparedStatementException->getMessage());
+            $this->terminate(self::ERROR_PREPARED_STATEMENT_EXCEPTION);
+        } catch (MailSendException $mailSendException) {
+            error_log($mailSendException->getMessage());
+            $this->terminate(self::ERROR_MAIL_SEND_EXCEPTION);
         }
 
         $this->terminate(self::SUCCESS);
