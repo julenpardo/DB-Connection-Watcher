@@ -47,8 +47,8 @@ class DBConnectionWatcher
      * The "main" function: reads the configuration, and checks the state of each database read from each configured
      * database.
      *
-     * @return int Status code; 0 if no error happened, others if an error occurred. Yes, it can be overwritten. But
-     * only one value can be returned.
+     * To end the function, exit() function is used instead of returning a status value, because "return" does not return
+     * the status to de environment, and this has to be delegated to PHP using exit() function.
      */
     public function run()
     {
@@ -56,10 +56,8 @@ class DBConnectionWatcher
             $configuration = Reader::readConfiguration(DEFAULT_CONFIG_PATH);
         } catch (ConfigurationException $configurationException) {
             error_log($configurationException->getMessage());
-            return self::ERROR_CONFIGURATION_EXCEPTION;
+            exit(self::ERROR_CONFIGURATION_EXCEPTION);
         }
-
-        $status = self::SUCCESS;
 
         foreach ($configuration as $dbConfiguration) {
             $db = DBFactory::getInstance($dbConfiguration);
@@ -70,17 +68,17 @@ class DBConnectionWatcher
                 $this->checkStatus($db, $email, $connectionThreshold);
             } catch (ConnectionException $connectionException) {
                 error_log($connectionException->getMessage());
-                $status = self::ERROR_CONNECTION_EXCEPTION;
+                exit(self::ERROR_CONNECTION_EXCEPTION);
             } catch (PreparedStatementCreationException $preparedStatementException) {
                 error_log($preparedStatementException->getMessage());
-                $status = self::ERROR_PREPARED_STATEMENT_EXCEPTION;
+                exit(self::ERROR_PREPARED_STATEMENT_EXCEPTION);
             } catch (MailSendException $mailSendException) {
                 error_log($mailSendException->getMessage());
-                $status = self::ERROR_MAIL_SEND_EXCEPTION;
+                exit(self::ERROR_MAIL_SEND_EXCEPTION);
             }
         }
 
-        return $status;
+        exit(self::SUCCESS);
     }
 
     /**
