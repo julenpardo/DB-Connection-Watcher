@@ -46,9 +46,9 @@ class DBConnectionWatcher
      * The "main" function: reads the configuration, and checks the state of each database read from each configured
      * database.
      *
-     * To end the function, exit() function is used (with terminate() class function wrapper)instead of returning a status
-     * value, because "return" does not return the status to de environment, and this has to be delegated to PHP using
-     * exit() function.
+     * To end the function, exit() function is used (with terminate() class function wrapper)instead of returning a
+     * status value, because "return" does not return the status to de environment, and this has to be delegated to PHP
+     * using exit() function.
      */
     public function run()
     {
@@ -117,8 +117,8 @@ class DBConnectionWatcher
     }
 
     /**
-     * A wrapper for exit() function, a "PHP killer" function. This is just for mocking the execution termination in unit
-     * tests.
+     * A wrapper for exit() function, a "PHP killer" function. This is just for mocking the execution termination in
+     * unit tests.
      *
      * @param int $code The exit code.
      */
