@@ -4,16 +4,49 @@ namespace DBConnectionWatcher\Configuration;
 
 class MissingOrExtraConfigurationsException extends ConfigurationException
 {
-    const MESSAGE = "Missing (or extra) configuration(s) in '%1' section.";
+    const MESSAGE = "%1 configuration(s) in '%2' section: ";
+    const MISSING = 'Missing';
+    const EXTRA   = 'Extra';
 
     /**
      * MissingOrExtraConfigurationsException constructor.
      *
      * @param String $section The section when the exception has occurred.
+     * @param array $expectedConfiguration
+     * @param array $actualConfiguration
      */
-    public function __construct($section)
+    public function __construct($section, $expectedConfiguration, $actualConfiguration)
     {
-        $message = str_replace('%1', $section, self::MESSAGE);
+        $missingOrExtra = (count($actualConfiguration) < count($expectedConfiguration)) ? self::MISSING : self::EXTRA;
+        $difference = $this->getDifference($expectedConfiguration, $actualConfiguration);
+        $differenceString = implode(', ', $difference);
+
+        $message = str_replace('%1', $missingOrExtra, self::MESSAGE);
+        $message = str_replace('%2', $section, $message);
+        $message .= $differenceString;
+
         parent::__construct($message);
+    }
+
+    /**
+     * Checks the difference between the expected and the actual configuration.
+     * As array_diff is limited, and only checks "entries from array1 that are not present in any of the other arrays",
+     * and to avoid conditional flow, the merge of the difference of both possibilities is checked. :)
+     *
+     * @param array $expectedConfiguration The expected configuration.
+     * @param array $actualConfiguration The actual configuration.
+     * @return array The difference between both arrays.
+     */
+    protected function getDifference($expectedConfiguration, $actualConfiguration)
+    {
+        $expectedKeys = array_keys($expectedConfiguration);
+        $actualKeys = array_keys($actualConfiguration);
+
+        $difference = array_merge(
+            array_diff($expectedKeys, $actualKeys),
+            array_diff($actualKeys, $expectedKeys)
+        );
+
+        return $difference;
     }
 }
