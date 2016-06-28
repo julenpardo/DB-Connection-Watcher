@@ -114,3 +114,16 @@ The test that checks that the mail has been sent correctly is skipped, because n
  - One for a config file with incorrect credentials for database, that returns ERROR_CONNECTION_EXCEPTION.
  - One simulating an improper configuration of SMTP, that returns ERROR_MAIL_SEND_EXCEPTION.
  - One with proper configuration, that returns SUCCESS.";Equivalence/Exception;Yes;Pass;The mailing class will be mocked.;Julen Pardo;17/06/2016
+9;tracker/ExceededConnectionTracker;readAllDatabases;"$path = /invalid/path
+----------------------------
+$path = <existing file>";"There are two different tests for this method:
+- One that passes a path of a non existing file, returning an empty array.
+- One that passes a path of an existing file with data, returning an array with the expected format.";Equivalence;Yes;Pass;;Julen Pardo;28/06/2016
+10;tracker/ExceededConnectionTracker;saveExceededDatabase;"$path = /invalid/path
+----------------------------
+$path = <valid path>
+$host = '127.0.0.1'
+$database = 'testdb'";"There are two different tests for this method:
+ - One that passes an invalid path, to throw an exception.
+ - One that passes a valid path, and the data is written without any problem.";Equivalence/Exception;Yes;Pass;;Julen Pardo;28/06/2016
+11;tracker/ExceededConnectionTracker;cleanDatabases;$path=<path to existing file>;Tests that cleans the file were the database exceeding connections are saved.;Equivalence;Yes;Pass;;Julen Pardo;28/06/2016
