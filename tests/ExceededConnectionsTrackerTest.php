@@ -3,7 +3,6 @@
 require_once(dirname(__FILE__) . '/../src/tracker/ExceededConnectionsTracker.php');
 require_once(dirname(__FILE__) . '/../src/tracker/WriteException.php');
 
-use DBConnectionWatcher\Tracker\WriteException;
 use DBConnectionWatcher\Tracker\ExceededConnectionTracker;
 
 class ExceedConnectionsTrackerTest extends PHPUnit_Framework_Testcase
@@ -67,5 +66,38 @@ class ExceedConnectionsTrackerTest extends PHPUnit_Framework_Testcase
 
         $actual = ExceededConnectionTracker::readAllDatabases($this->file);
         $this->assertEquals($data, $actual);
+    }
+
+    /**
+     * @expectedException \DBConnectionWatcher\Tracker\WriteException
+     */
+    public function testSaveExceededDatabaseInvalidPath()
+    {
+        $path = '/invalid/path';
+        $host = 'host';
+        $database = 'database';
+
+        ExceededConnectionTracker::saveExceededDatabase($path, $host, $database);
+    }
+
+    public function testSaveExceededDatabase()
+    {
+        $this->deleteFileIfExists();
+        $this->createFile();
+
+        $host = '127.0.0.1';
+        $db = 'testdb';
+
+        $expected = $host . ExceededConnectionTracker::SEPARATOR . $db;
+
+        try {
+            ExceededConnectionTracker::saveExceededDatabase($this->file, $host, $db);
+
+            $actual = file($this->file, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
+
+            $this->assertEquals($expected, $actual[0]);
+        } catch (Exception $exception) {
+            $this->fail('No exception should be thrown: ' . $exception->getMessage());
+        }
     }
 }

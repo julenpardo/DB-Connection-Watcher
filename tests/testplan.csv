@@ -118,7 +118,7 @@ The test that checks that the mail has been sent correctly is skipped, because n
 ----------------------------
 $path = <existing file>";"There are two different tests for this method:
 - One that passes a path of a non existing file, returning an empty array.
-- One that passes a path of an existing file with data, returning an array with the expected format.";Equivalence;No;;;;
+- One that passes a path of an existing file with data, returning an array with the expected format.";Equivalence;Yes;Pass;;Julen Pardo;28/06/2016
 10;tracker/ExceededConnectionTracker;saveExceededDatabase;"$path = /invalid/path
 ----------------------------
 $path = <valid path>
