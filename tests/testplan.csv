@@ -127,3 +127,42 @@ $database = 'testdb'";"There are two different tests for this method:
  - One that passes an invalid path, to throw an exception.
  - One that passes a valid path, and the data is written without any problem.";Equivalence/Exception;Yes;Pass;;Julen Pardo;28/06/2016
 11;tracker/ExceededConnectionTracker;cleanDatabases;$path=<path to existing file>;Tests that cleans the file were the database exceeding connections are saved.;Equivalence;Yes;Pass;;Julen Pardo;28/06/2016
+12;DBConnectionWatcher;wasDatabaseExceeded;"$previouslyExceededDatabases = []
+$host = ''
+$database = ''
+-----------------------------------------------
+$previouslyExceededDatabases = [
+    'localhost' => 'testdb'
+]
+$host = 'localhost'
+$database = 'testdb'
+-----------------------------------------------
+$previouslyExceededDatabases = [
+    'localhost' => 'testdb'
+]
+$host = 'localhost'
+$database = 'testdb2'
+------------------------------------------------
+$previouslyExceededDatabases = [
+    'localhost' = [
+        'testdb1',
+        'testdb2'
+    ]
+]
+$host = 'localhost'
+$database = 'testdb3'
+--------------------------------------------------
+$previouslyExceededDatabases = [
+    'localhost' = [
+        'testdb1',
+        'testdb2'
+    ]
+]
+$host = 'localhost'
+$database = 'testdb2'
+--------------------------------------------------";"There are five different tests:
+ - One that passes an empty previousDatabases array, so, no database has been exceeded before.
+ - One that passes a single host with a single database, and then passing host and database that matches.
+ - One that passes a single host with a single database, passing host that matches, but a database that doesn't.
+ - One that passes an array of databases for a host, with then a database that doesn't match.
+ - One that passes an array of databases for a host, and a databases that matches one of them.";Equivalence;;;;;
