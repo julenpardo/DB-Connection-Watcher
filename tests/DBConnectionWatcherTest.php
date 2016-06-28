@@ -66,6 +66,10 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
         if (file_exists($this->configurationFile)) {
             unlink($this->configurationFile);
         }
+
+        if (file_exists(DBConnectionWatcher::EXCEEDED_DATABASES_DATA_FILE)) {
+            unlink(DBConnectionWatcher::EXCEEDED_DATABASES_DATA_FILE);
+        }
     }
 
     public function testCheckStatusBelowThreshold()
@@ -223,8 +227,8 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
 
         try {
             $method->invokeArgs($this->dbConnectionWatcher, [$db, $email, $connectionThreshold]);
+            $this->closeConnections($connections);
         } catch (\Exception $exception) {
-
             $this->fail('No exception should be thrown: ' . $exception->getMessage());
         }
     }

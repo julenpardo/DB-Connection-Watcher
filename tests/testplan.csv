@@ -165,4 +165,4 @@ $database = 'testdb2'
  - One that passes a single host with a single database, and then passing host and database that matches.
  - One that passes a single host with a single database, passing host that matches, but a database that doesn't.
  - One that passes an array of databases for a host, with then a database that doesn't match.
- - One that passes an array of databases for a host, and a databases that matches one of them.";Equivalence;;;;;
+ - One that passes an array of databases for a host, and a databases that matches one of them.";Equivalence;Yes;Pass;;Julen Pardo;28/06/2016
