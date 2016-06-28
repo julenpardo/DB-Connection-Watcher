@@ -9,7 +9,7 @@ class ExceededConnectionTracker
     public static function readAllDatabases($path)
     {
         $databases = [];
-        $file = file($path, FILE_SKIP_EMPTY_LINES);
+        $file = @file($path, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
 
         if ($file !== false) {
             foreach ($file as $line) {
@@ -27,7 +27,7 @@ class ExceededConnectionTracker
     public static function saveExceededDatabase($path, $host, $database)
     {
         $line = $host . self::SEPARATOR . $database . PHP_EOL;
-        $written = file_put_contents($path, $line, FILE_APPEND | LOCK_EX);
+        $written = @file_put_contents($path, $line, FILE_APPEND | LOCK_EX);
 
         if (!$written) {
             throw new WriteException($path);

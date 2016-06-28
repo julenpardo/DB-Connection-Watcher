@@ -66,7 +66,6 @@ class ExceedConnectionsTrackerTest extends PHPUnit_Framework_Testcase
         }
 
         $actual = ExceededConnectionTracker::readAllDatabases($this->file);
-
         $this->assertEquals($data, $actual);
     }
 }
