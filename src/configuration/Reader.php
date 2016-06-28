@@ -76,7 +76,7 @@ class Reader
             $missingConfig = count($keys) !== count(self::$fieldsAndTypes);
 
             if ($missingConfig) {
-                throw new MissingOrExtraConfigurationsException($section);
+                throw new MissingOrExtraConfigurationsException($section, self::$fieldsAndTypes, $data);
             }
 
             foreach ($data as $key => $value) {
