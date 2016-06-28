@@ -21,6 +21,7 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
     protected function setUp()
     {
         $this->dbConnectionWatcher = new DBConnectionWatcher();
+        $this->deleteConfigFileIfExists();
     }
 
     protected function tearDown()
@@ -64,6 +65,10 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
     {
         if (file_exists($this->configurationFile)) {
             unlink($this->configurationFile);
+        }
+
+        if (file_exists(DBConnectionWatcher::EXCEEDED_DATABASES_DATA_FILE)) {
+            unlink(DBConnectionWatcher::EXCEEDED_DATABASES_DATA_FILE);
         }
     }
 
@@ -222,23 +227,26 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
 
         try {
             $method->invokeArgs($this->dbConnectionWatcher, [$db, $email, $connectionThreshold]);
+            $this->closeConnections($connections);
         } catch (\Exception $exception) {
-
             $this->fail('No exception should be thrown: ' . $exception->getMessage());
         }
     }
 
     public function testRunConfigurationExceptionCode()
     {
-        $expected = DBConnectionWatcher::ERROR_CONFIGURATION_EXCEPTION;
-        $actual = $this->dbConnectionWatcher->run();
+        $dbConnectionWatcherMock = $this->getMock('DBConnectionWatcher\DBConnectionWatcher', ['terminate']);
+        // The following will "assert" that the method DBConnectionWatcher::terminate(), in its first time, will be called
+        // with DBConnectionWatcher::ERROR_CONFIGURATION_EXCEPTION parameter.
+        $dbConnectionWatcherMock->expects($this->at(0))
+            ->method('terminate')
+            ->with(DBConnectionWatcher::ERROR_CONFIGURATION_EXCEPTION);
 
-        $this->assertEquals($expected, $actual);
+        $dbConnectionWatcherMock->run();
     }
 
     public function testRunConnectionExceptionCode()
     {
-        $expected = DBConnectionWatcher::ERROR_CONNECTION_EXCEPTION;
         $configuration = '[section 1]
             database = postgres
             username = non_existing_user
@@ -252,14 +260,18 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
 
         file_put_contents($this->configurationFile, $configuration);
 
-        $actual = $this->dbConnectionWatcher->run();
+        $dbConnectionWatcherMock = $this->getMock('DBConnectionWatcher\DBConnectionWatcher', ['terminate']);
+        // The following will "assert" that the method DBConnectionWatcher::terminate(), in its first time, will be called
+        // with DBConnectionWatcher::ERROR_CONNECTION_EXCEPTION parameter.
+        $dbConnectionWatcherMock->expects($this->at(0))
+            ->method('terminate')
+            ->with(DBConnectionWatcher::ERROR_CONNECTION_EXCEPTION);
 
-        $this->assertEquals($expected, $actual);
+        $dbConnectionWatcherMock->run();
     }
 
     public function testRunMailSendExceptionCode()
     {
-        $expected = DBConnectionWatcher::ERROR_MAIL_SEND_EXCEPTION;
         $connectionThreshold = 2;
         $database = 'postgres';
         $username = 'postgres';
@@ -280,26 +292,30 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
 
         file_put_contents($this->configurationFile, $configuration);
 
+        $dbConnectionWatcherMock = $this->getMock('DBConnectionWatcher\DBConnectionWatcher', ['terminate']);
+        // The following will "assert" that the method DBConnectionWatcher::terminate(), in its first time, will be called
+        // with DBConnectionWatcher::ERROR_MAIL_SEND_EXCEPTION parameter.
+        $dbConnectionWatcherMock->expects($this->at(0))
+            ->method('terminate')
+            ->with(DBConnectionWatcher::ERROR_MAIL_SEND_EXCEPTION);
+
         $mailer = $this->getMock('DBConnectionWatcher\Mailer\Mailer');
         $mailer->expects($this->once())
             ->method('sendThresholdExceededMail')
             ->will($this->throwException(new \DBConnectionWatcher\Mailer\MailSendException()));
 
-        $this->dbConnectionWatcher->setMailer($mailer);
+        $dbConnectionWatcherMock->setMailer($mailer);
 
         $connections = $this->createDatabaseConnections($database, $username, $password, $host, $port,
             $connectionThreshold + 1);
 
-        $actual = $this->dbConnectionWatcher->run();
-
-        $this->assertEquals($expected, $actual);
+        $dbConnectionWatcherMock->run();
 
         $this->closeConnections($connections);
     }
 
     public function testRun()
     {
-        $expected = DBConnectionWatcher::SUCCESS;
         $configuration = '[section 1]
             database = postgres
             username = postgres
@@ -313,7 +329,90 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
 
         file_put_contents($this->configurationFile, $configuration);
 
-        $actual = $this->dbConnectionWatcher->run();
+        $dbConnectionWatcherMock = $this->getMock('DBConnectionWatcher\DBConnectionWatcher', ['terminate']);
+        // The following will "assert" that the method DBConnectionWatcher::terminate(), in its first time, will be called
+        // with DBConnectionWatcher::SUCCESS parameter.
+        $dbConnectionWatcherMock->expects($this->at(0))
+            ->method('terminate')
+            ->with(DBConnectionWatcher::SUCCESS);
+
+        $dbConnectionWatcherMock->run();
+    }
+
+    public function testWasDatabaseExceededEmptyArray()
+    {
+        $previousExceeded = [];
+        $expected = false;
+        $actual = $this->dbConnectionWatcher->wasDatabaseExceeded($previousExceeded, '', '');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWasDatabaseExceededSimpleArrayMatching()
+    {
+        $host = 'localhost';
+        $database = 'testdb';
+
+        $previousExceeded = [
+            $host => $database
+        ];
+
+        $expected = true;
+        $actual = $this->dbConnectionWatcher->wasDatabaseExceeded($previousExceeded, $host, $database);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWasDatabaseExceededSimpleArrayNotMatching()
+    {
+        $host = 'localhost';
+        $database = 'testdb';
+        $inputDb = 'testdb2';
+
+        $previousExceeded = [
+            $host => $database
+        ];
+
+        $expected = false;
+        $actual = $this->dbConnectionWatcher->wasDatabaseExceeded($previousExceeded, $host, $inputDb);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWasDatabaseExceededAnidatedNotMatching()
+    {
+        $host = 'localhost';
+        $databases = [
+            'testdb1',
+            'testdb2'
+        ];
+        $inputDb = 'testdb3';
+
+        $previousExceeded = [
+            $host => $databases
+        ];
+
+        $expected = false;
+        $actual = $this->dbConnectionWatcher->wasDatabaseExceeded($previousExceeded, $host, $inputDb);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWasDatabaseExceededAnidatedMatching()
+    {
+        $host = 'localhost';
+        $databases = [
+            'testdb1',
+            'testdb2'
+        ];
+        $inputDb = $databases[1];
+
+        $previousExceeded = [
+            $host => $databases
+        ];
+
+        $expected = true;
+        $actual = $this->dbConnectionWatcher->wasDatabaseExceeded($previousExceeded, $host, $inputDb);
 
         $this->assertEquals($expected, $actual);
     }
