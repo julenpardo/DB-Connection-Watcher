@@ -13,7 +13,11 @@ spl_autoload_register(function ($namespace) {
     $path = implode('/', $path);
     $path = strtolower($path);
 
-    $fullpath = $dbcwPath . '/' . $path . '/' . $class . '.php';
+    if ($path === '') {
+        $fullpath = $dbcwPath . '/' . $class . '.php';
+    } else {
+        $fullpath = $dbcwPath . '/' . $path . '/' . $class . '.php';
+    }
 
     if (file_exists($fullpath)) {
         require($fullpath);
