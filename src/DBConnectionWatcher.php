@@ -13,6 +13,7 @@ use DBConnectionWatcher\DB\DBFactory;
 use DBConnectionWatcher\DB\PreparedStatementCreationException;
 use DBConnectionWatcher\Mailer\Mailer;
 use DBConnectionWatcher\Mailer\MailSendException;
+use DBConnectionWatcher\Tracker\ExceededConnectionTracker;
 
 class DBConnectionWatcher
 {
@@ -21,6 +22,8 @@ class DBConnectionWatcher
     const ERROR_PREPARED_STATEMENT_EXCEPTION = 3;
     const ERROR_MAIL_SEND_EXCEPTION = 4;
     const SUCCESS = 0;
+
+    const EXCEEDED_DATABASES_DATA_FILE = '/tmp/dbconnectionwatcher/databases.dat';
 
     protected $mailer;
 
@@ -92,11 +95,19 @@ class DBConnectionWatcher
      */
     protected function checkStatus($db, $email, $connectionThreshold)
     {
+        $previouslyExceededDatabases = ExceededConnectionTracker::readAllDatabases(self::EXCEEDED_DATABASES_DATA_FILE);
+
         try {
             $db->connect();
             $currentConnections = $db->queryConnectionNumber();
 
             if ($currentConnections > $connectionThreshold) {
+                ExceededConnectionTracker::saveExceededDatabase(
+                    self::EXCEEDED_DATABASES_DATA_FILE,
+                    $db->getHost(),
+                    $db->getDatabase()
+                );
+
                 $this->mailer->sendThresholdExceededMail(
                     $email,
                     $db->getDatabase(),
@@ -104,6 +115,15 @@ class DBConnectionWatcher
                     $currentConnections,
                     $connectionThreshold
                 );
+            } else {
+                if ($this->wasDatabaseExceeded($previouslyExceededDatabases, $db->getHost(), $db->getDatabase())) {
+                    $this->mailer->sendBehindThresholdMail(
+                        $email,
+                        $db->getDatabase(),
+                        $db->getHost(),
+                        $connectionThreshold
+                    );
+                }
             }
 
             $db->disconnect();
@@ -114,6 +134,27 @@ class DBConnectionWatcher
         } catch (MailSendException $mailSendException) {
             throw $mailSendException;
         }
+    }
+
+    public function wasDatabaseExceeded($previouslyExceededDatabases, $host, $database)
+    {
+        $wasExceeded = false;
+
+        if (in_array($host, $previouslyExceededDatabases)) {
+            $databases = $previouslyExceededDatabases[$host];
+
+            if (is_array($databases)) {
+                if (in_array($database, $databases)) {
+                    $wasExceeded = true;
+                }
+            } else {
+                if ($database === $databases) {
+                    $wasExceeded = true;
+                }
+            }
+        }
+
+        return $wasExceeded;
     }
 
     /**
