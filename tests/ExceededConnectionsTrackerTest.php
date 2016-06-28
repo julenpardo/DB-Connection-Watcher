@@ -32,6 +32,15 @@ class ExceedConnectionsTrackerTest extends PHPUnit_Framework_Testcase
         file_put_contents($this->file, '');
     }
 
+    protected static function getMethod($name)
+    {
+        $class = new ReflectionClass('DBConnectionWatcher\Tracker\ExceededConnectionTracker');
+        $method = $class->getMethod($name);
+        $method->setAccessible(true);
+
+        return $method;
+    }
+
     public function testReadAllDatabasesInvalidPath()
     {
         $path = 'this is an invalid path';
@@ -99,5 +108,23 @@ class ExceedConnectionsTrackerTest extends PHPUnit_Framework_Testcase
         } catch (Exception $exception) {
             $this->fail('No exception should be thrown: ' . $exception->getMessage());
         }
+    }
+
+    public function testCleanDatabases()
+    {
+        $this->deleteFileIfExists();
+        $this->createFile();
+
+        $line = '127.0.0.1:testdb';
+
+        file_put_contents($this->file, $line);
+
+        $method = $this->getMethod('cleanDatabases');
+        $method->invokeArgs(null, [$this->file]);
+
+        $expected = '';
+        $actual = file_get_contents($this->file);
+
+        $this->assertEquals($expected, $actual);
     }
 }

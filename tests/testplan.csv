@@ -125,5 +125,5 @@ $path = <valid path>
 $host = '127.0.0.1'
 $database = 'testdb'";"There are two different tests for this method:
  - One that passes an invalid path, to throw an exception.
- - One that passes a valid path, and the data is written without any problem.";Equivalence/Exception;No;;;;
+ - One that passes a valid path, and the data is written without any problem.";Equivalence/Exception;Yes;Pass;;Julen Pardo;28/06/2016
 11;tracker/ExceededConnectionTracker;cleanDatabases;$path=<path to existing file>;Tests that cleans the file were the database exceeding connections are saved.;Equivalence;No;;;;
