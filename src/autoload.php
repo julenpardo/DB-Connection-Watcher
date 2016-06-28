@@ -1,8 +1,11 @@
 <?php
 
-define('DBCW_PATH', dirname(__FILE__));
+// The PSR standard does not allow to define constants where "flow" exists, so, it must be a variable.
+$dbcwPath = dirname(__FILE__);
 
-function dbConnectionWatcherAutoload($namespace) {
+spl_autoload_register(function ($namespace) {
+    global $dbcwPath;
+
     $path = explode('\\', $namespace);
     array_shift($path);
     $class = array_pop($path);
@@ -10,11 +13,9 @@ function dbConnectionWatcherAutoload($namespace) {
     $path = implode('/', $path);
     $path = strtolower($path);
 
-    $fullpath = DBCW_PATH . '/' . $path . '/' . $class . '.php';
+    $fullpath = $dbcwPath . '/' . $path . '/' . $class . '.php';
 
     if (file_exists($fullpath)) {
         require($fullpath);
     }
-}
-
-spl_autoload_register('dbConnectionWatcherAutoload');
+});
