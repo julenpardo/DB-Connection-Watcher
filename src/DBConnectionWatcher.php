@@ -139,8 +139,9 @@ class DBConnectionWatcher
     public function wasDatabaseExceeded($previouslyExceededDatabases, $host, $database)
     {
         $wasExceeded = false;
+        $hosts = array_keys($previouslyExceededDatabases);
 
-        if (in_array($host, $previouslyExceededDatabases)) {
+        if (in_array($host, $hosts)) {
             $databases = $previouslyExceededDatabases[$host];
 
             if (is_array($databases)) {
