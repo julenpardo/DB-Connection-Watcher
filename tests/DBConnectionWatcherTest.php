@@ -66,6 +66,10 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
         if (file_exists($this->configurationFile)) {
             unlink($this->configurationFile);
         }
+
+        if (file_exists(DBConnectionWatcher::EXCEEDED_DATABASES_DATA_FILE)) {
+            unlink(DBConnectionWatcher::EXCEEDED_DATABASES_DATA_FILE);
+        }
     }
 
     public function testCheckStatusBelowThreshold()
@@ -223,8 +227,8 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
 
         try {
             $method->invokeArgs($this->dbConnectionWatcher, [$db, $email, $connectionThreshold]);
+            $this->closeConnections($connections);
         } catch (\Exception $exception) {
-
             $this->fail('No exception should be thrown: ' . $exception->getMessage());
         }
     }
@@ -333,5 +337,83 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
             ->with(DBConnectionWatcher::SUCCESS);
 
         $dbConnectionWatcherMock->run();
+    }
+
+    public function testWasDatabaseExceededEmptyArray()
+    {
+        $previousExceeded = [];
+        $expected = false;
+        $actual = $this->dbConnectionWatcher->wasDatabaseExceeded($previousExceeded, '', '');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWasDatabaseExceededSimpleArrayMatching()
+    {
+        $host = 'localhost';
+        $database = 'testdb';
+
+        $previousExceeded = [
+            $host => $database
+        ];
+
+        $expected = true;
+        $actual = $this->dbConnectionWatcher->wasDatabaseExceeded($previousExceeded, $host, $database);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWasDatabaseExceededSimpleArrayNotMatching()
+    {
+        $host = 'localhost';
+        $database = 'testdb';
+        $inputDb = 'testdb2';
+
+        $previousExceeded = [
+            $host => $database
+        ];
+
+        $expected = false;
+        $actual = $this->dbConnectionWatcher->wasDatabaseExceeded($previousExceeded, $host, $inputDb);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWasDatabaseExceededAnidatedNotMatching()
+    {
+        $host = 'localhost';
+        $databases = [
+            'testdb1',
+            'testdb2'
+        ];
+        $inputDb = 'testdb3';
+
+        $previousExceeded = [
+            $host => $databases
+        ];
+
+        $expected = false;
+        $actual = $this->dbConnectionWatcher->wasDatabaseExceeded($previousExceeded, $host, $inputDb);
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testWasDatabaseExceededAnidatedMatching()
+    {
+        $host = 'localhost';
+        $databases = [
+            'testdb1',
+            'testdb2'
+        ];
+        $inputDb = $databases[1];
+
+        $previousExceeded = [
+            $host => $databases
+        ];
+
+        $expected = true;
+        $actual = $this->dbConnectionWatcher->wasDatabaseExceeded($previousExceeded, $host, $inputDb);
+
+        $this->assertEquals($expected, $actual);
     }
 }
