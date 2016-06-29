@@ -103,7 +103,7 @@ class DBConnectionWatcher
             $currentConnections = $db->queryConnectionNumber();
 
             if ($currentConnections > $connectionThreshold) {
-                ExceededConnectionTracker::saveExceededDatabase(
+                ExceededConnectionsTracker::saveExceededDatabase(
                     self::EXCEEDED_DATABASES_DATA_FILE,
                     $db->getHost(),
                     $db->getDatabase()
