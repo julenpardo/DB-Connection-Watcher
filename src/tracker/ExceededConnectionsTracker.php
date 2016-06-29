@@ -2,7 +2,7 @@
 
 namespace DBConnectionWatcher\Tracker;
 
-class ExceededConnectionTracker
+class ExceededConnectionsTracker
 {
     const SEPARATOR = ':';
 

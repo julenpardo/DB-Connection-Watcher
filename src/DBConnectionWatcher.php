@@ -13,7 +13,7 @@ use DBConnectionWatcher\DB\DBFactory;
 use DBConnectionWatcher\DB\PreparedStatementCreationException;
 use DBConnectionWatcher\Mailer\Mailer;
 use DBConnectionWatcher\Mailer\MailSendException;
-use DBConnectionWatcher\Tracker\ExceededConnectionTracker;
+use DBConnectionWatcher\Tracker\ExceededConnectionsTracker;
 
 class DBConnectionWatcher
 {
@@ -96,7 +96,7 @@ class DBConnectionWatcher
      */
     protected function checkStatus($db, $email, $connectionThreshold)
     {
-        $previouslyExceededDatabases = ExceededConnectionTracker::readAllDatabases(self::EXCEEDED_DATABASES_DATA_FILE);
+        $previouslyExceededDatabases = ExceededConnectionsTracker::readAllDatabases(self::EXCEEDED_DATABASES_DATA_FILE);
 
         try {
             $db->connect();
