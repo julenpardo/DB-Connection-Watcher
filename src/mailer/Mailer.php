@@ -1,12 +1,37 @@
 <?php
 
+/**
+ * Mail sending methods.
+ *
+ * @author Julen Pardo
+ */
+
 namespace DBConnectionWatcher\Mailer;
 
+/**
+ * Class Mailer for mail sending.
+ *
+ * @package DBConnectionWatcher\Mailer
+ * @author  Julen Pardo
+ */
 class Mailer
 {
+    /**
+     * The mail headers.
+     * @const
+     */
     const MAIL_HEADERS = "MIME-Version: 1.0\r\nContent-Type: text/html\r\n\r\n";
 
+    /**
+     * The message subject for when the mail is that a database has exceeded the threshold.
+     * @const
+     */
     const THRESHOLD_EXCEEDED_SUBJECT = "Warning: connection threshold exceeded in '%1' database";
+
+    /**
+     * The message body for when the mail is that a database has exceeded the threshold.
+     * @const
+     */
     const THRESHOLD_EXCEEDED_MESSAGE = <<< HTML
         <html><body><p>The following database has generated an alert:</p>
         <ul>
@@ -17,8 +42,16 @@ class Mailer
         </ul></body></html>
 HTML;
 
-
+    /**
+     * The message subject for when the mail is that a database has returned to be below the threshold.
+     * @const
+     */
     const THRESHOLD_RETURN_BEHIND_SUBJECT = "Connection number in '%1' database is again behind the threshold";
+
+    /**
+     * The message body for when the mail is that a database has returned to be below the threshold.
+     * @const
+     */
     const THRESHOLD_RETURN_BEHIND_MESSAGE = <<< HTML
         <html><body><p>The following database has returned to normal situation, after having exceeded the configured
         threshold:</p>

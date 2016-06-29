@@ -1,9 +1,25 @@
 <?php
 
+/**
+ * Exception class for invalid configuration values exceptions.
+ *
+ * @author Julen Pardo
+ */
+
 namespace DBConnectionWatcher\Configuration;
 
+/**
+ * Class InvalidConfigurationValueException.
+ *
+ * @package DBConnectionWatcher\Configuration
+ * @author  Julen Pardo
+ */
 class InvalidConfigurationValueException extends ConfigurationException
 {
+    /**
+     * Exception message.
+     * @const
+     */
     const MESSAGE = "The '%1' configuration is empty.";
 
     /**

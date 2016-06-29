@@ -1,9 +1,25 @@
 <?php
 
+/**
+ * Methods for configuration reading and parsing.
+ *
+ * @author Julen Pardo
+ */
+
 namespace DBConnectionWatcher\Configuration;
 
+/**
+ * Class Reader, for configuration reading, and parsing.
+ *
+ * @package DBConnectionWatcher\Configuration
+ * @author  Julen Pardo
+ */
 class Reader
 {
+    /**
+     * The definition of the required fields for the configuration, and the expected type for each one.
+     * @var array
+     */
     private static $fieldsAndTypes = array(
         'database'             => 'string',
         'username'             => 'string',

@@ -3,12 +3,17 @@
 /**
  * Database methods definitions.
  *
- * @copyright 2016 onwards Julen Pardo & Mondragon Unibertsitatea
- * @license   Apache 2.0 http://www.apache.org/licenses/LICENSE-2.0
+ * @author Julen Pardo
  */
 
 namespace DBConnectionWatcher\DB;
 
+/**
+ * Interface DBInterface.
+ *
+ * @package DBConnectionWatcher\DB
+ * @author  Julen Pardo
+ */
 interface DBInterface
 {
     /**

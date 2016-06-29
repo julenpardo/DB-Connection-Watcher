@@ -1,20 +1,65 @@
 <?php
 
+/**
+ * Specific DBInterface method implementations for PostgreSQL.
+ *
+ * @author Julen Pardo
+ */
+
 namespace DBConnectionWatcher\DB\DBMS;
 
 use DBConnectionWatcher\DB\ConnectionException;
 use DBConnectionWatcher\DB\DBInterface;
 use DBConnectionWatcher\DB\PreparedStatementCreationException;
 
+/**
+ * Class PostgreSQL with specific method implementations.
+ *
+ * @package DBConnectionWatcher\DB\DBMS
+ * @author  Julen Pardo
+ */
 class PostgreSQL implements DBInterface
 {
+    /**
+     * The name of the prepared statement.
+     * @const
+     */
     const CONNECTION_NUMBER_STATEMENT = 'connection_number';
 
+    /**
+     * The database connection resource.
+     * @var
+     */
     private $connection;
+
+    /**
+     * Database name.
+     * @var string
+     */
     private $database;
+
+    /**
+     * Username to connect to database.
+     * @var string
+     */
     private $username;
+
+    /**
+     * Password for the username to connect to database.
+     * @var string
+     */
     private $password;
+
+    /**
+     * The host where the database is.
+     * @var string
+     */
     private $host;
+
+    /**
+     * The port the database service is listening to.
+     * @var int
+     */
     private $port;
 
     /**
@@ -96,8 +141,9 @@ class PostgreSQL implements DBInterface
      * is configured for a threshold of 1 connection (which would be weird), the tool would always return 1 if its
      * connection is not subtracted (which would be even more weird, since the database is not having a real usage).
      *
-     * @throws \Exception
-     * @return The number of connections.
+     * @throws \DBConnectionWatcher\DB\PreparedStatementCreationException If an error occurs creating the prepared
+     * statement.
+     * @return int The number of connections.
      */
     public function queryConnectionNumber()
     {

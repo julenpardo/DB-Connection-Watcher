@@ -1,9 +1,12 @@
 <?php
 
-namespace DBConnectionWatcher;
+/**
+ * The main class for the program.
+ *
+ * @author Julen Pardo
+ */
 
-define('DEFAULT_CONFIG_FILENAME', 'dbconnectionwatcher.ini');
-define('DEFAULT_CONFIG_PATH', dirname(__FILE__) . '/../' . DEFAULT_CONFIG_FILENAME);
+namespace DBConnectionWatcher;
 
 use DBConnectionWatcher\Configuration\ConfigurationException;
 use DBConnectionWatcher\DB\ConnectionException;
@@ -15,17 +18,63 @@ use DBConnectionWatcher\Mailer\Mailer;
 use DBConnectionWatcher\Mailer\MailSendException;
 use DBConnectionWatcher\Tracker\ExceededConnectionsTracker;
 
+/**
+ * Class DBConnectionWatcher, the main class. Reads the configuration, checks the databases, performs the necessary
+ * actions basing on the configuration and the connection number of the databases, and ends.
+ *
+ * @package DBConnectionWatcher
+ * @author Julen Pardo
+ */
 class DBConnectionWatcher
 {
+    /**
+     * The path to the file where the databases that have exceeded their connection threshold are registered.
+     * @const
+     */
     const EXCEEDED_DATABASES_DATA_FILE = '/var/dbconnectionwatcher/exceeded_databases.dat';
+
+    /**
+     * The path to the configuration file.
+     * @const
+     */
     const CONFIG_FILE = '/etc/dbconnectionwatcher/dbconnectionwatcher.ini';
 
+    /**
+     * The return code for when configuration exception occurs.
+     * @const
+     */
     const ERROR_CONFIGURATION_EXCEPTION = 1;
+
+    /**
+     * The return code for when connection exception occurs.
+     * @const
+     */
     const ERROR_CONNECTION_EXCEPTION = 2;
+
+    /**
+     * The return code for when prepared statement exception occurs.
+     * @const
+     */
     const ERROR_PREPARED_STATEMENT_EXCEPTION = 3;
+
+    /**
+     * The return code for when mail sending exception occurs.
+     * @const
+     */
     const ERROR_MAIL_SEND_EXCEPTION = 4;
+
+    /**
+     * The return code when everything has gone perfectly.
+     * @const
+     */
     const SUCCESS = 0;
 
+    /**
+     * The mail sender, when the threshold has been exceeded; or, after being exceeded, the connection number returns
+     * to be below it.
+     *
+     * @var \DBConnectionWatcher\Mailer\Mailer
+     */
     protected $mailer;
 
     /**
@@ -137,6 +186,14 @@ class DBConnectionWatcher
         }
     }
 
+    /**
+     * Checks if the given database was registered as database with exceeded connections.
+     *
+     * @param array $previouslyExceededDatabases The previously exceeded databases.
+     * @param string $host The host the given database is at.
+     * @param string $database The database to check if was a database with exceeded connections.
+     * @return bool If the database was previously exceeded or not.
+     */
     public function wasDatabaseExceeded($previouslyExceededDatabases, $host, $database)
     {
         $wasExceeded = false;

@@ -1,9 +1,25 @@
 <?php
 
+/**
+ * Exception class for incorrect configuration format exceptions.
+ *
+ * @author Julen Pardo
+ */
+
 namespace DBConnectionWatcher\Configuration;
 
+/**
+ * Class InvalidConfigurationFormatException.
+ *
+ * @package DBConnectionWatcher\Configuration
+ * @author  Julen Pardo
+ */
 class InvalidConfigurationFormatException extends ConfigurationException
 {
+    /**
+     * Exception message.
+     * @const
+     */
     const MESSAGE = 'The file has an invalid format (may you forgot to put a [section]?).';
 
     /**
