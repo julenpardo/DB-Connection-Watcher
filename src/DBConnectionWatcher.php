@@ -13,17 +13,18 @@ use DBConnectionWatcher\DB\DBFactory;
 use DBConnectionWatcher\DB\PreparedStatementCreationException;
 use DBConnectionWatcher\Mailer\Mailer;
 use DBConnectionWatcher\Mailer\MailSendException;
-use DBConnectionWatcher\Tracker\ExceededConnectionTracker;
+use DBConnectionWatcher\Tracker\ExceededConnectionsTracker;
 
 class DBConnectionWatcher
 {
+    const EXCEEDED_DATABASES_DATA_FILE = '/var/dbconnectionwatcher/exceeded_databases.dat';
+    const CONFIG_FILE = '/etc/dbconnectionwatcher/dbconnectionwatcher.ini';
+
     const ERROR_CONFIGURATION_EXCEPTION = 1;
     const ERROR_CONNECTION_EXCEPTION = 2;
     const ERROR_PREPARED_STATEMENT_EXCEPTION = 3;
     const ERROR_MAIL_SEND_EXCEPTION = 4;
     const SUCCESS = 0;
-
-    const EXCEEDED_DATABASES_DATA_FILE = '/tmp/dbconnectionwatcher/databases.dat';
 
     protected $mailer;
 
@@ -56,7 +57,7 @@ class DBConnectionWatcher
     public function run()
     {
         try {
-            $configuration = Reader::readConfiguration(DEFAULT_CONFIG_PATH);
+            $configuration = Reader::readConfiguration(self::CONFIG_FILE);
 
             foreach ($configuration as $dbConfiguration) {
                 $db = DBFactory::getInstance($dbConfiguration);
@@ -95,14 +96,14 @@ class DBConnectionWatcher
      */
     protected function checkStatus($db, $email, $connectionThreshold)
     {
-        $previouslyExceededDatabases = ExceededConnectionTracker::readAllDatabases(self::EXCEEDED_DATABASES_DATA_FILE);
+        $previouslyExceededDatabases = ExceededConnectionsTracker::readAllDatabases(self::EXCEEDED_DATABASES_DATA_FILE);
 
         try {
             $db->connect();
             $currentConnections = $db->queryConnectionNumber();
 
             if ($currentConnections > $connectionThreshold) {
-                ExceededConnectionTracker::saveExceededDatabase(
+                ExceededConnectionsTracker::saveExceededDatabase(
                     self::EXCEEDED_DATABASES_DATA_FILE,
                     $db->getHost(),
                     $db->getDatabase()

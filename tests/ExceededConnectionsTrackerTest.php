@@ -3,7 +3,7 @@
 require_once(dirname(__FILE__) . '/../src/tracker/ExceededConnectionsTracker.php');
 require_once(dirname(__FILE__) . '/../src/tracker/WriteException.php');
 
-use DBConnectionWatcher\Tracker\ExceededConnectionTracker;
+use DBConnectionWatcher\Tracker\ExceededConnectionsTracker;
 
 class ExceedConnectionsTrackerTest extends PHPUnit_Framework_Testcase
 {
@@ -34,7 +34,7 @@ class ExceedConnectionsTrackerTest extends PHPUnit_Framework_Testcase
 
     protected static function getMethod($name)
     {
-        $class = new ReflectionClass('DBConnectionWatcher\Tracker\ExceededConnectionTracker');
+        $class = new ReflectionClass('DBConnectionWatcher\Tracker\ExceededConnectionsTracker');
         $method = $class->getMethod($name);
         $method->setAccessible(true);
 
@@ -45,7 +45,7 @@ class ExceedConnectionsTrackerTest extends PHPUnit_Framework_Testcase
     {
         $path = 'this is an invalid path';
         $expected = [];
-        $actual = ExceededConnectionTracker::readAllDatabases($path);
+        $actual = ExceededConnectionsTracker::readAllDatabases($path);
 
         $this->assertEquals($expected, $actual);
     }
@@ -73,7 +73,7 @@ class ExceedConnectionsTrackerTest extends PHPUnit_Framework_Testcase
             }
         }
 
-        $actual = ExceededConnectionTracker::readAllDatabases($this->file);
+        $actual = ExceededConnectionsTracker::readAllDatabases($this->file);
         $this->assertEquals($data, $actual);
     }
 
@@ -86,7 +86,7 @@ class ExceedConnectionsTrackerTest extends PHPUnit_Framework_Testcase
         $host = 'host';
         $database = 'database';
 
-        ExceededConnectionTracker::saveExceededDatabase($path, $host, $database);
+        ExceededConnectionsTracker::saveExceededDatabase($path, $host, $database);
     }
 
     public function testSaveExceededDatabase()
@@ -97,10 +97,10 @@ class ExceedConnectionsTrackerTest extends PHPUnit_Framework_Testcase
         $host = '127.0.0.1';
         $db = 'testdb';
 
-        $expected = $host . ExceededConnectionTracker::SEPARATOR . $db;
+        $expected = $host . ExceededConnectionsTracker::SEPARATOR . $db;
 
         try {
-            ExceededConnectionTracker::saveExceededDatabase($this->file, $host, $db);
+            ExceededConnectionsTracker::saveExceededDatabase($this->file, $host, $db);
 
             $actual = file($this->file, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
 
