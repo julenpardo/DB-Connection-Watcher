@@ -1,9 +1,25 @@
 <?php
 
+/**
+ * Exception class for invalid configuration value type exceptions.
+ *
+ * @author Julen Pardo
+ */
+
 namespace DBConnectionWatcher\Configuration;
 
+/**
+ * Class InvalidConfigurationValueTypeException.
+ *
+ * @package DBConnectionWatcher\Configuration
+ * @author  Julen Pardo
+ */
 class InvalidConfigurationValueTypeException extends ConfigurationException
 {
+    /**
+     * Exception message.
+     * @const
+     */
     const MESSAGE = "Invalid type of '%1' configuration: expecting %2 type and got '%3' value, in section '%4'.";
 
     /**

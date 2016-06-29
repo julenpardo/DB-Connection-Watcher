@@ -1,7 +1,19 @@
 <?php
 
+/**
+ * Exception class for not found files exceptions.
+ *
+ * @author Julen Pardo
+ */
+
 namespace DBConnectionWatcher\Configuration;
 
+/**
+ * Class FileNotFoundException.
+ *
+ * @package DBConnectionWatcher\Configuration
+ * @author  Julen Pardo
+ */
 class FileNotFoundException extends ConfigurationException
 {
     /**
