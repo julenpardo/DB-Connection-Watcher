@@ -1,7 +1,7 @@
-DB Connection Watcher
+DB Connection Watcher ![Release](https://img.shields.io/badge/release-v0.1--rc1-blue.svg)
 =====================
 
-![Release](https://img.shields.io/badge/release-v0.1--rc1-blue.svg) ![Coverage](https://img.shields.io/badge/coverage-87.76%25-brightgreen.svg) ![Code quality](https://scrutinizer-ci.com/g/julenpardo/DB-Connection-Watcher/badges/quality-score.png?b=master) ![License](https://img.shields.io/badge/license-Apache-blue.svg)
+![Build status](https://img.shields.io/jenkins/s/http/julenpardo.com/jenkins/DB-Connection-Watcher.svg) ![Coverage](https://img.shields.io/badge/coverage-87.76%25-brightgreen.svg) ![Code quality](https://scrutinizer-ci.com/g/julenpardo/DB-Connection-Watcher/badges/quality-score.png?b=master) ![License](https://img.shields.io/badge/license-Apache-blue.svg)
 
 This tool will watch the connection number of a database, generating alerts when the defined threshold is exceeded.
 This tool will watch the connection number of a database, generating alerts when the defined threshold is exceeded.
