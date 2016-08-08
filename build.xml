@@ -67,7 +67,8 @@
         <exec command="mkdir -p ${workspace.dir}/reports/coverage"/>
         <exec command="phpunit --testsuite ${testsuite.name}
                                --coverage-html ${workspace.dir}/reports/coverage
-                               --coverage-clover ${workspace.dir}/reports/coverage/coverage.xml"
+                               --coverage-clover ${workspace.dir}/reports/coverage/coverage.xml
+                               --log-junit ${workspace.dir}/reports/phpunit/phpunit.xml"
                 dir="${workspace.dir}" returnProperty="phpunit.status" outputProperty="phpunit.output"/>
         <if>
             <not>
