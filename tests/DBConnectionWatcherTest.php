@@ -36,7 +36,7 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
     {
         $this->configurationDir = pathinfo($this->configurationFile)['dirname'];
 
-        if (!is_dir($this->configurationDir)) {
+        if (!file_exists($this->configurationDir)) {
             mkdir($this->configurationDir, 0777, true);
         }
 
