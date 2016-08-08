@@ -40,6 +40,11 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
             mkdir($this->configurationDir, 0777, true);
         }
 
+        $exceededDatabasesDir = pathinfo(dbConnectionWatcher::EXCEEDED_DATABASES_DATA_FILE)['dirname'];
+
+        if (!file_exists($exceededDatabasesDir)) {
+            mkdir($exceededDatabasesDir, 0777, true);
+        }
     }
 
     protected function getMethod($name)
