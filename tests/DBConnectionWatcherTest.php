@@ -18,16 +18,28 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
 {
     protected $dbConnectionWatcher;
     protected $configurationFile = DBConnectionWatcher::CONFIG_FILE;
+    protected $configurationDir;
 
     protected function setUp()
     {
         $this->dbConnectionWatcher = new DBConnectionWatcher();
+        $this->createConfigFileDirectoryIfNotExists();
         $this->deleteConfigFileIfExists();
     }
 
     protected function tearDown()
     {
         $this->deleteConfigFileIfExists();
+    }
+
+    protected function createConfigFileDirectoryIfNotExists()
+    {
+        $this->configurationDir = pathinfo($this->configurationFile)['dirname'];
+
+        if (!is_dir($this->configurationDir)) {
+            mkdir($this->configurationDir, 0777, true);
+        }
+
     }
 
     protected function getMethod($name)
