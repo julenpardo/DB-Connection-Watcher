@@ -62,7 +62,8 @@
 
         <exec command="sleep 10" description="Incredibly dirty workaround to 'wait' until the database system is set up."/>
 
-        <exec command="./createuser -p ${postgresql.port} -s postgres" dir="${postgresql.install.dir}/bin"/>
+        <exec command="./createuser -p ${postgresql.port} -s postgres" dir="${postgresql.install.dir}/bin" outputProperty="createuser.output"/>
+        <echo msg="${createuser.output}"/>
     </target>
 
     <target name="phpunit" depends="postgresql_init">
