@@ -35,7 +35,7 @@
         <echo msg="${postgresql_pull.output}"/>
     </target>
 
-    <target name="postgresql_install" depends="postgresql_pull">
+    <target name="postgresql_install" depends="postgresql_cleanup,postgresql_pull">
         <exec command="git checkout --force ${postgresql.version}" dir="${postgresql.git}" outputProperty="postgresql_install.checkout.output"/>
         <echo msg="${postgresql_install.checkout.output}"/>
 
@@ -50,12 +50,8 @@
     </target>
 
     <target name="postgresql_init" depends="postgresql_install">
-        <phingcall target="postgresql_cleanup"/>
-
         <exec command="./initdb --pgdata=${postgresql.data.dir}" dir="${postgresql.install.dir}/bin" outputProperty="postgresql_init.initdb.output"/>
         <echo msg="${postgresql_init.initdb.output}"/>
-
-        <echo file="${postgresql.data.dir}/postgresql.conf" append="true" msg="port = ${postgresql.port}"/>
 
         <exec command="./postgres -D ${postgresql.data.dir} &gt; /dev/null 2&gt;&amp;1 &amp;" dir="${postgresql.install.dir}/bin" returnProperty="postgresql.pid" outputProperty="postgresql_init.postgres.output"/>
         <echo msg="${postgresql_init.postgres.output}"/>
