@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="db-connection-watcher" default="phpunit">
+<project name="DB-Connection-Watcher" default="phpunit">
 
-    <property name="workspace.dir" value="${env.JENKINS_HOME}/jobs/${phing.project.name}/workspace"/>
-    <property name="sourcecode.dir" value="${workspace.dir}/${phing.project.name}"/>
+    <property name="workspace.dir" value="/var/jenkins_home/workspace/DB-Connection-Watcher"/>
 
-    <property name="postgresql.version" value=""/>
-    <property name="postgresql.port" value=""/>
     <property name="postgresql.url" value="https://github.com/postgres/postgres"/>
-    <property name="postgresql.config.dir" value="${env.JENKINS_HOME}/postgres-config"/>
     <property name="postgresql.git" value="${workspace.dir}/postgresql.git"/>
-    <property name="postgresql.install.dir" value="${workspace.dir}/postgresql_version/${postgresql.version}"/>
+    <property name="postgresql.install.dir" value="${postgresql.git}/${postgresql.version}"/>
     <property name="postgresql.data.dir" value="${postgresql.install.dir}/data"/>
-    <property name="postgresql.port" value="5433"/>
     <property name="postgresql.configure.args" value=" --prefix=${postgresql.install.dir} --with-pgport=${postgresql.port}"/>
 
     <property name="testsuite.name" value="db_connection_watcher_testsuite"/>
 
     <property name="phpcs.standard" value="PSR2"/>
-    <property name="phpcs.ignore" value="*.xml,*.md,.idea/*,*.gitignore,.git/*,tests/*,doc/*"/>
+    <property name="phpcs.ignore" value="*.xml,*.md,.idea/*,*.gitignore,.git/*,tests/*,vendor/*,*.json,*.lock"/>
 
     <property name="success.code" value="0"/>
 
@@ -29,9 +24,7 @@
     </target>
 
     <target name="postgresql_cleanup">
-        <delete includeemptydirs="true">
-            <fileset dir="${postgresql.data.dir}" includes="**/*" casesensitive="false"/>
-        </delete>
+        <exec command="rm --dir --recursive --force ${postgresql.data.dir}"/>
     </target>
 
     <target name="postgresql_pull">
@@ -46,11 +39,14 @@
         <exec command="git checkout --force ${postgresql.version}" dir="${postgresql.git}" outputProperty="postgresql_install.checkout.output"/>
         <echo msg="${postgresql_install.checkout.output}"/>
 
-        <exec command="./configure ${postgresql.configure.args}" dir="${postgresql.git}"/>
+        <exec command="./configure ${postgresql.configure.args}" dir="${postgresql.git}" outputProperty="postgresql_install.configure.output"/>
+        <echo msg="${postgresql_install.configure.output}"/>
 
-        <exec command="./make" dir="${postgresql.git}"/>
+        <exec command="make" dir="${postgresql.git}" outputProperty="postgresql_install.make.output"/>
+        <echo msg="${postgresql_install.make.output}"/>
 
-        <exec command="./make install" dir="${postgresql.git}"/>
+        <exec command="make install" dir="${postgresql.git}" outputProperty="make.install.output"/>
+        <echo msg="${make.install.output}"/>
     </target>
 
     <target name="postgresql_init" depends="postgresql_install">
@@ -59,9 +55,6 @@
         <exec command="./initdb --pgdata=${postgresql.data.dir}" dir="${postgresql.install.dir}/bin" outputProperty="postgresql_init.initdb.output"/>
         <echo msg="${postgresql_init.initdb.output}"/>
 
-        <copy todir="${postgresql.data.dir}" overwrite="true">
-            <fileset dir="${postgresql.config.dir}"/>
-        </copy>
         <echo file="${postgresql.data.dir}/postgresql.conf" append="true" msg="port = ${postgresql.port}"/>
 
         <exec command="./postgres -D ${postgresql.data.dir} &gt; /dev/null 2&gt;&amp;1 &amp;" dir="${postgresql.install.dir}/bin" returnProperty="postgresql.pid" outputProperty="postgresql_init.postgres.output"/>
@@ -73,7 +66,7 @@
     </target>
 
     <target name="phpunit" depends="postgresql_init">
-        <exec command="phpunit --testsuite ${testsuite.name}" dir="${sourcecode.dir}" returnProperty="phpunit.status" outputProperty="phpunit.output"/>
+        <exec command="phpunit --testsuite ${testsuite.name}" dir="${workspace.dir}" returnProperty="phpunit.status" outputProperty="phpunit.output"/>
         <if>
             <not>
                 <equals arg1="${phpunit.status}" arg2="${success.code}"/>
@@ -90,7 +83,7 @@
     </target>
 
     <target name="phpcs">
-        <exec command="phpcs -v --standard=${phpcs.standard} --ignore=${phpcs.ignore} ./" dir="./" returnProperty="phpcs.status" outputProperty="phpcs.output"/>
+        <exec command="vendor/bin/phpcs -v --standard=${phpcs.standard} --ignore=${phpcs.ignore} ./" dir="${workspace.dir}" returnProperty="phpcs.status" outputProperty="phpcs.output"/>
         <if>
             <not>
                 <equals arg1="${phpcs.status}" arg2="${success.code}"/>
