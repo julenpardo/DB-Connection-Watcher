@@ -63,7 +63,12 @@
     </target>
 
     <target name="phpunit" depends="postgresql_init">
-        <exec command="phpunit --testsuite ${testsuite.name}" dir="${workspace.dir}" returnProperty="phpunit.status" outputProperty="phpunit.output"/>
+        <exec command="mkdir -p ${workspace.dir}/reports/"/>
+        <exec command="mkdir -p ${workspace.dir}/reports/coverage"/>
+        <exec command="phpunit --testsuite ${testsuite.name}
+                               --coverage-html ${workspace.dir}/reports/coverage
+                               --coverage-clover ${workspace.dir}/reports/coverage/coverage.xml"
+                dir="${workspace.dir}" returnProperty="phpunit.status" outputProperty="phpunit.output"/>
         <if>
             <not>
                 <equals arg1="${phpunit.status}" arg2="${success.code}"/>
