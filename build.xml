@@ -12,7 +12,7 @@
     <property name="testsuite.name" value="db_connection_watcher_testsuite"/>
 
     <property name="phpcs.standard" value="PSR2"/>
-    <property name="phpcs.ignore" value="*.xml,*.md,.idea/*,*.gitignore,.git/*,tests/*,vendor/*,*.json,*.lock"/>
+    <property name="phpcs.ignore" value="*.xml,*.md,.idea/*,*.gitignore,.git/*,tests/*,vendor/*,*.json,*.lock,doc/*"/>
 
     <property name="success.code" value="0"/>
 
