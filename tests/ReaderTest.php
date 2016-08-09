@@ -1,6 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../src/configuration/ConfigurationException.php');
 require_once(dirname(__FILE__) . '/../src/configuration/Reader.php');
 require_once(dirname(__FILE__) . '/../src/configuration/FileNotFoundException.php');

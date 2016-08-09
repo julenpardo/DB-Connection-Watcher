@@ -1,6 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../src/db/DBFactory.php');
 require_once(dirname(__FILE__) . '/../src/db/DBInterface.php');
 require_once(dirname(__FILE__) . '/../src/db/dbms/PostgreSQL.php');

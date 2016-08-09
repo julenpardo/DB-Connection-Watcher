@@ -12,7 +12,7 @@
     <property name="testsuite.name" value="db_connection_watcher_testsuite"/>
 
     <property name="phpcs.standard" value="PSR2"/>
-    <property name="phpcs.ignore" value="*.xml,*.md,.idea/*,*.gitignore,.git/*,tests/*,vendor/*,*.json,*.lock"/>
+    <property name="phpcs.ignore" value="*.xml,*.md,.idea/*,*.gitignore,.git/*,tests/*,vendor/*,*.json,*.lock,doc/*,reports/*"/>
 
     <property name="success.code" value="0"/>
 
@@ -35,7 +35,7 @@
         <echo msg="${postgresql_pull.output}"/>
     </target>
 
-    <target name="postgresql_install" depends="postgresql_pull">
+    <target name="postgresql_install" depends="postgresql_cleanup,postgresql_pull">
         <exec command="git checkout --force ${postgresql.version}" dir="${postgresql.git}" outputProperty="postgresql_install.checkout.output"/>
         <echo msg="${postgresql_install.checkout.output}"/>
 
@@ -50,23 +50,26 @@
     </target>
 
     <target name="postgresql_init" depends="postgresql_install">
-        <phingcall target="postgresql_cleanup"/>
-
         <exec command="./initdb --pgdata=${postgresql.data.dir}" dir="${postgresql.install.dir}/bin" outputProperty="postgresql_init.initdb.output"/>
         <echo msg="${postgresql_init.initdb.output}"/>
-
-        <echo file="${postgresql.data.dir}/postgresql.conf" append="true" msg="port = ${postgresql.port}"/>
 
         <exec command="./postgres -D ${postgresql.data.dir} &gt; /dev/null 2&gt;&amp;1 &amp;" dir="${postgresql.install.dir}/bin" returnProperty="postgresql.pid" outputProperty="postgresql_init.postgres.output"/>
         <echo msg="${postgresql_init.postgres.output}"/>
 
         <exec command="sleep 10" description="Incredibly dirty workaround to 'wait' until the database system is set up."/>
 
-        <exec command="./createuser -p ${postgresql.port} -s postgres" dir="${postgresql.install.dir}/bin"/>
+        <exec command="./createuser -p ${postgresql.port} -s postgres" dir="${postgresql.install.dir}/bin" outputProperty="createuser.output"/>
+        <echo msg="${createuser.output}"/>
     </target>
 
     <target name="phpunit" depends="postgresql_init">
-        <exec command="phpunit --testsuite ${testsuite.name}" dir="${workspace.dir}" returnProperty="phpunit.status" outputProperty="phpunit.output"/>
+        <exec command="mkdir -p ${workspace.dir}/reports/"/>
+        <exec command="mkdir -p ${workspace.dir}/reports/coverage"/>
+        <exec command="phpunit --testsuite ${testsuite.name}
+                               --coverage-html ${workspace.dir}/reports/coverage
+                               --coverage-clover ${workspace.dir}/reports/coverage/coverage.xml
+                               --log-junit ${workspace.dir}/reports/phpunit/phpunit.xml"
+                dir="${workspace.dir}" returnProperty="phpunit.status" outputProperty="phpunit.output"/>
         <if>
             <not>
                 <equals arg1="${phpunit.status}" arg2="${success.code}"/>
