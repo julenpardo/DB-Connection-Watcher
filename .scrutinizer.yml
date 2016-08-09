@@ -1,0 +1,8 @@
+filter:
+  paths: ["src/*"]
+
+  excluded_paths:
+    - build/*
+    - doc/*
+    - tests/*
+    - vendor/*

@@ -1,12 +1,25 @@
 <?php
 
+/**
+ * DBMS instantiation.
+ */
+
 namespace DBConnectionWatcher\DB;
 
 use DBConnectionWatcher\Configuration\ConfigurationException;
 use DBConnectionWatcher\DB\DBMS\PostgreSQL;
 
+/**
+ * Class DBFactory, for instantiating corresponding class for each DMBS.
+ *
+ * @package DBConnectionWatcher\DB
+ * @author  Julen Pardo
+ */
 class DBFactory
 {
+    /**
+     * The expected name for PostgreSQL DBMS.
+     */
     const DBMS_POSTGRESQL = 'postgresql';
 
     /**

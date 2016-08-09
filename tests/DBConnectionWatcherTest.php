@@ -1,6 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 require_once(dirname(__FILE__) . '/../src/db/DBFactory.php');
 require_once(dirname(__FILE__) . '/../src/db/DBInterface.php');
 require_once(dirname(__FILE__) . '/../src/db/ConnectionException.php');
@@ -18,16 +17,33 @@ class DBConnectionWatcherTest extends \PHPUnit_Framework_Testcase
 {
     protected $dbConnectionWatcher;
     protected $configurationFile = DBConnectionWatcher::CONFIG_FILE;
+    protected $configurationDir;
 
     protected function setUp()
     {
         $this->dbConnectionWatcher = new DBConnectionWatcher();
+        $this->createConfigFileDirectoryIfNotExists();
         $this->deleteConfigFileIfExists();
     }
 
     protected function tearDown()
     {
         $this->deleteConfigFileIfExists();
+    }
+
+    protected function createConfigFileDirectoryIfNotExists()
+    {
+        $this->configurationDir = pathinfo($this->configurationFile)['dirname'];
+
+        if (!file_exists($this->configurationDir)) {
+            mkdir($this->configurationDir, 0777, true);
+        }
+
+        $exceededDatabasesDir = pathinfo(dbConnectionWatcher::EXCEEDED_DATABASES_DATA_FILE)['dirname'];
+
+        if (!file_exists($exceededDatabasesDir)) {
+            mkdir($exceededDatabasesDir, 0777, true);
+        }
     }
 
     protected function getMethod($name)

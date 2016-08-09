@@ -1,11 +1,38 @@
 <?php
 
+/**
+ * Exception class for missing or extra configurations exceptions.
+ *
+ * @author Julen Pardo
+ */
+
 namespace DBConnectionWatcher\Configuration;
 
+/**
+ * Class MissingOrExtraConfigurationsException.
+ *
+ * @package DBConnectionWatcher\Configuration
+ * @author  Julen Pardo
+ */
 class MissingOrExtraConfigurationsException extends ConfigurationException
 {
+    /**
+     * Exception message.
+     * @const
+     */
     const MESSAGE = "%1 configuration(s) in '%2' section: ";
+
+    /**
+     * String for missing configurations.
+     * @const
+     */
+
     const MISSING = 'Missing';
+
+    /**
+     * String for extra configurations.
+     * @const
+     */
     const EXTRA   = 'Extra';
 
     /**

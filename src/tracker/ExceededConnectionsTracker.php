@@ -1,9 +1,25 @@
 <?php
 
+/**
+ * Method for reading and registering the databases exceeding the connection threshold.
+ *
+ * @author Julen Pardo
+ */
+
 namespace DBConnectionWatcher\Tracker;
 
+/**
+ * Class ExceededConnectionsTracker for reading and registering the databases exceeding the connection threshold.
+ *
+ * @package DBConnectionWatcher\Tracker
+ * @author  Julen Pardo
+ */
 class ExceededConnectionsTracker
 {
+    /**
+     * The character(s) separating the host and the database.
+     * @const
+     */
     const SEPARATOR = ':';
 
     /**

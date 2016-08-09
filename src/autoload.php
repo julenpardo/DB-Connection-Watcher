@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * File for the autoloading, included in the program entry point (index.php). Finds each class basing in its namespace.
+ *
+ * @author Julen Pardo
+ */
+
 // The PSR standard does not allow to define constants where "flow" exists, so, it must be a variable.
 $dbcwPath = dirname(__FILE__);
 

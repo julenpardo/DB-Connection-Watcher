@@ -1,9 +1,25 @@
 <?php
 
+/**
+ * Exception class for database connections exceptions.
+ *
+ * @author Julen Pardo
+ */
+
 namespace DBConnectionWatcher\DB;
 
+/**
+ * Class ConnectionException.
+ *
+ * @package DBConnectionWatcher\DB
+ * @author  Julen Pardo.
+ */
 class ConnectionException extends \Exception
 {
+    /**
+     * Exception message.
+     * @const
+     */
     const MESSAGE = 'An error occur when trying to %1 PostgreSQL database connection: ';
 
     /**

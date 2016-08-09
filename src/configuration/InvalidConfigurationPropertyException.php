@@ -1,9 +1,25 @@
 <?php
 
+/**
+ * Exception class for invalid properties exceptions.
+ *
+ * @author Julen Pardo
+ */
+
 namespace DBConnectionWatcher\Configuration;
 
+/**
+ * Class InvalidConfigurationPropertyException.
+ *
+ * @package DBConnectionWatcher\Configuration
+ * @author  Julen Pardo
+ */
 class InvalidConfigurationPropertyException extends ConfigurationException
 {
+    /**
+     * Exception message.
+     * @const
+     */
     const MESSAGE = "Invalid '%1' configuration in '%2' section.";
 
     /**
