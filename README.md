@@ -1,12 +1,11 @@
-DB Connection Watcher ![Release](https://img.shields.io/badge/release-v0.1--rc2-blue.svg)
+Database Connection Watcher ![Release](https://img.shields.io/badge/release-v0.1-blue.svg)
 =====================
 
 ![Build status](https://img.shields.io/jenkins/s/http/julenpardo.com/jenkins/DB-Connection-Watcher.svg)
 ![Tests](https://img.shields.io/jenkins/t/http/julenpardo.com/jenkins/DB-Connection-Watcher.svg)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/julenpardo/DB-Connection-Watcher/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/julenpardo/DB-Connection-Watcher/?branch=master)
-![License](https://img.shields.io/badge/license-Apache-blue.svg)
+![License](https://img.shields.io/badge/license-GPL%20v3-blue.svg)
 
-This tool will watch the connection number of a database, generating alerts when the defined threshold is exceeded.
 This tool will watch the connection number of a database, generating alerts when the defined threshold is exceeded.
 
 ## Prerequisites
@@ -14,12 +13,10 @@ A SMTP client installed and configured is required in the host where this tool i
 
 ## Compatibility
 
-Tested for:
-
- - PostgreSQL (9.5).
+Currently, only works for PostgreSQL.
 
 ## Installation
- - Download the last release: [v0.1-rc2](https://github.com/julenpardo/DB-Connection-Watcher/releases/tag/v0.1-rc2).
+ - Download the last release: [v0.1](https://github.com/julenpardo/DB-Connection-Watcher/releases/tag/v0.1).
  - Unzip.
  - Give execution permissions to `install.sh`.
  - Execute it as superuser: `sudo ./install.sh`.
