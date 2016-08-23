@@ -72,6 +72,7 @@
                                   -p        127.0.0.1:${mysql.port}:3306
                                   -e        MYSQL_ROOT_PASSWORD=${mysql.password}
                                   -d ${mysql.docker.repo}"/>
+        <exec command="sleep 10"/>
     </target>
 
     <target name="mysql_stop">
@@ -79,7 +80,7 @@
         <exec command="docker rm ${mysql.docker.container}"/>
     </target>
 
-    <target name="phpunit" depends="postgresql_init,mysql_init">
+    <target name="phpunit" depends="mysql_init,postgresql_init">
         <exec command="mkdir -p ${workspace.dir}/reports/"/>
         <exec command="mkdir -p ${workspace.dir}/reports/coverage"/>
         <exec command="phpunit --testsuite ${testsuite.name}
