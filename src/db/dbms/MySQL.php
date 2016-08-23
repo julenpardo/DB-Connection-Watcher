@@ -21,12 +21,6 @@ use DBConnectionWatcher\DB\PreparedStatementCreationException;
 class MySQL implements DBInterface
 {
     /**
-     * The name of the prepared statement.
-     * @const
-     */
-    const CONNECTION_NUMBER_STATEMENT = 'connection_number';
-
-    /**
      * The database connection resource.
      * @var
      */
@@ -151,9 +145,25 @@ class MySQL implements DBInterface
     public function queryConnectionNumber()
     {
         $connectionNumberSql = 'SELECT COUNT(processlist.id) '
-            . 'FROM INFORMATION_SCHEMA.PROCESSLIST processlist '
-            . 'WHERE processlist.db = "$1"';
+                    . 'FROM INFORMATION_SCHEMA.PROCESSLIST processlist '
+                    . 'WHERE processlist.db = ?';
 
-        // @TODO: execute the query and return the connection number.
+        $statement = $connection->prepare($connectionNumberSql);
+
+        $statement->bind_param("s", $this->database);
+
+        $statement->execute();
+        $statement->bind_result($connectionNumber);
+        $statement->fetch();
+
+        if (!$connectionNumber) {
+            $connectionNumber = 0;
+        } else {
+            $connectionNumber -= 1;
+        }
+
+        $statement->close();
+
+        return $connectionNumber;
     }
 }
