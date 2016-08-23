@@ -3,11 +3,17 @@
 
     <property name="workspace.dir" value="/var/jenkins_home/workspace/DB-Connection-Watcher"/>
 
+    <!-- PostgreSQL -->
     <property name="postgresql.url" value="https://github.com/postgres/postgres"/>
     <property name="postgresql.git" value="${workspace.dir}/postgresql.git"/>
     <property name="postgresql.install.dir" value="${postgresql.git}/${postgresql.version}"/>
     <property name="postgresql.data.dir" value="${postgresql.install.dir}/data"/>
     <property name="postgresql.configure.args" value=" --prefix=${postgresql.install.dir} --with-pgport=${postgresql.port}"/>
+
+    <!-- MySQL -->
+    <property name="mysql.docker.repo" value="mysql:${mysql.version}"/>
+    <property name="mysql.docker.container" value="mysql-${mysql.version}"/>
+    <property name="mysql.password" value="root"/>
 
     <property name="testsuite.name" value="db_connection_watcher_testsuite"/>
 
@@ -40,13 +46,10 @@
         <echo msg="${postgresql_install.checkout.output}"/>
 
         <exec command="./configure ${postgresql.configure.args}" dir="${postgresql.git}" outputProperty="postgresql_install.configure.output"/>
-        <echo msg="${postgresql_install.configure.output}"/>
 
         <exec command="make" dir="${postgresql.git}" outputProperty="postgresql_install.make.output"/>
-        <echo msg="${postgresql_install.make.output}"/>
 
         <exec command="make install" dir="${postgresql.git}" outputProperty="make.install.output"/>
-        <echo msg="${make.install.output}"/>
     </target>
 
     <target name="postgresql_init" depends="postgresql_install">
@@ -62,7 +65,21 @@
         <echo msg="${createuser.output}"/>
     </target>
 
-    <target name="phpunit" depends="postgresql_init">
+    <!-- MySQL -->
+    <target name="mysql_init">
+        <exec command="docker pull ${mysql.docker.repo}"/>
+        <exec command="docker run --name    ${mysql.docker.container}
+                                  -p        127.0.0.1:${mysql.port}:3306
+                                  -e        MYSQL_ROOT_PASSWORD=${mysql.password}
+                                  -d ${mysql.docker.repo}"/>
+    </target>
+
+    <target name="mysql_stop">
+        <exec command="docker stop ${mysql.docker.container}"/>
+        <exec command="docker rm ${mysql.docker.container}"/>
+    </target>
+
+    <target name="phpunit" depends="postgresql_init,mysql_init">
         <exec command="mkdir -p ${workspace.dir}/reports/"/>
         <exec command="mkdir -p ${workspace.dir}/reports/coverage"/>
         <exec command="phpunit --testsuite ${testsuite.name}
@@ -75,13 +92,18 @@
                 <equals arg1="${phpunit.status}" arg2="${success.code}"/>
             </not>
             <then>
+                <phingcall target="postgresql_stop"/>
+                <phingcall target="mysql_stop"/>
                 <fail message="${phpunit.output}"/>
             </then>
         </if>
         <echo msg="${phpunit.output}"/>
+
+        <phingcall target="postgresql_stop"/>
+        <phingcall target="mysql_stop"/>
     </target>
 
-    <target name="postgresql_stop" depends="phpunit">
+    <target name="postgresql_stop">
         <exec command="killp ${postgresql.pid}"/>
     </target>
 
@@ -98,6 +120,6 @@
         <echo msg="${phpcs.output}"/>
     </target>
 
-    <target name="all" depends="postgresql_stop,phpcs"/>
+    <target name="all" depends="phpunit,phpcs"/>
 
 </project>
